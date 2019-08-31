@@ -21,6 +21,7 @@ management:
       exposure:
         include: hystrix.stream
         
+        
 ---
 spring:
   profiles: order1
