@@ -1,0 +1,61 @@
+#Tomcat config
+server:
+  port: 8081
+
+spring:
+
+  # data source config
+  datasource:
+    url: jdbc:mysql://rm-bp154bkicd65e8igceo.mysql.rds.aliyuncs.com:3306/wechat_pay?serverTimezone=GMT%2B8&characterEncoding=utf-8&allowMultiQueries=true
+    username: root
+    password: ${datasource.password}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # jpa config
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        enable_lazy_load_no_trans: true
+#        generate_statistics: true
+        order_inserts: true
+        jdbc:
+          batch_size: 10
+
+  # thymeleaf config
+  thymeleaf:
+    cache: false
+  devtools:
+    restart:
+      exclude: templates/**
+
+  #redis config
+  redis:
+    database: 2
+    host: 47.107.58.79
+    port: 16379
+    password: ${redis.password}
+    lettuce:
+      pool:
+        max-active: 8
+        max-wait: 1
+        max-idle: 8
+        min-idle: 0
+
+# wechat config
+WX:
+  appId: wxe79225eb01043233
+  mchId: 1562360291
+  key:  a036e0812bcd4b7989125012570a8423
+  appSecret: fe357d19a0655a18d86cb5d4f822a5c2
+  SSlCertPath: C:/wxcert/apiclient_cert.p12
+  SSlCertPassword: 1510236951
+  notifyUrl:
+    pay: https://wcdemo.withive.cn/pay/payNotify
+    refund: https://wcdemo.withive.cn/pay/refundNotify
+  serverUrl: https://wcdemo.withive.cn
+

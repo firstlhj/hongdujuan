@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="/css/index.css">
+    <title>杜鹃花</title>
+    <div th:replace="shared/layout_header"></div>
+</head>
+<body>
+<div class="content">
+    <header>
+        <img src="/img/img1.gif" alt="">
+    </header>
+    <div class="box-1"></div>
+    <div class="box-2 box-6">
+        <div class="box-3">
+            <p id="confirmOrder">我要认种</p>
+        </div>
+        <div class="box-4" th:if="${showMyTree}">
+            <p id="myOrder">我的认种</p>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>由小黑物联科技有限公司提供技术支持</p>
+    </footer>
+</div>
+</body>
+
+<div th:replace="shared/layout_scripts"></div>
+<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+</html>
+
+<script>
+    //节流阀
+    const throttle = (fun, delay) => {
+        let last, deferTimer
+        return function (args) {
+            let _args = arguments
+            let now = +new Date()
+            if (last && now < last + delay) {
+                clearTimeout(deferTimer)
+                deferTimer = setTimeout(function () {
+                    last = now
+                    fun.apply(this, _args)
+                }, delay)
+            } else {
+                last = now
+                fun.apply(this, _args)
+            }
+        }
+    }
+    //iphoneX 底部偏差
+    const isIphonex = () => {
+        if (typeof window !== 'undefined' && window) {
+            return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812;
+        }
+        return false;
+    };
+
+    const onTop = e => {
+        let div = document.querySelector('.box-2');
+        const osTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
+        if (isIphonex()) {
+            osTop > 900 ? div.classList.remove('box-6') : div.classList.add('box-6');
+        } else {
+            osTop > 1041 ? div.classList.remove('box-6') : div.classList.add('box-6');
+        }
+
+    }
+    let throttleScroll = throttle(onTop, 500)
+    window.addEventListener("scroll", throttleScroll)
+
+    $(function () {
+        showLoad();
+
+        // 获取当前链接地址，不带参数部分
+        const currentUrl = location.origin + location.pathname;
+
+        // 微信js初始化完成回调
+        wx.ready(function () {
+            wx.updateTimelineShareData({
+                title: '种植红杜鹃', // 分享标题
+                link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '/img/shu.png', // 分享图标
+                success: function () {
+                    // 设置成功
+                }
+            });
+
+            wx.updateAppMessageShareData({
+                title: '种植红杜鹃', // 分享标题
+                desc: '为主席家乡种植红杜鹃', // 分享描述
+                link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                imgUrl: '/img/shu.png', // 分享图标
+                success: function () {
+                    // 设置成功
+                }
+            });
+        });
+
+        wx.error(function(res){
+            layer.msg("微信分享接口初始化失败");
+        });
+
+        const params = {};
+        // 授权验证js api
+        $.ajax({
+            type: "post",
+            dataType: 'json',
+            url: "/jspai/getConfig",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(params),
+            error: function (res) {
+                closeLoad();
+            },
+            success: function (res) {
+                closeLoad();
+
+                if (res.code) {
+                    wx.config({
+                        debug: false,
+                        jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
+                        ...res.data,
+                    });
+                } else {
+                    layer.alert(res.msg, {icon: 2});
+                }
+            }
+        });
+
+        // 下单按钮
+        $("#confirmOrder").click(function () {
+
+            const orderData = {
+                productCode: "001"
+            };
+
+            $.ajax({
+                type: "post",
+                dataType: 'json',
+                url: "/order/create",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(orderData),
+                success: function (res) {
+                    if (res.code) {
+                        // 下单成功跳转支付
+                        location.href = "/pay/index";
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                }
+            });
+        });
+
+        $("#myOrder").click(function () {
+            location.href = "/product/index";
+        });
+    })
+</script>

@@ -1,0 +1,469 @@
+package cn.withive.wxpay.service;
+
+import cn.withive.wxpay.callback.GetAccessTokenCallback;
+import cn.withive.wxpay.callback.GetUserInfoCallback;
+import cn.withive.wxpay.config.WXPayMchConfig;
+import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.model.WXAccessTokenModel;
+import cn.withive.wxpay.model.WXUserInfoModel;
+import cn.withive.wxpay.sdk.JsApi.WXJsApiUtil;
+import cn.withive.wxpay.sdk.WXPay;
+import cn.withive.wxpay.sdk.WXPayConstants;
+import cn.withive.wxpay.sdk.WXPayUtil;
+import cn.withive.wxpay.util.HttpUtil;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+@Service
+@Slf4j
+public class WXService {
+
+    @Autowired
+    private WXPayMchConfig config;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    public WXPayMchConfig getConfig() {
+        return config;
+    }
+
+    /**
+     * <p>
+     * 微信文档地址：
+     * <a href="https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/Wechat_webpage_authorization.html">
+     * 构造网页授权获取code的URL</a>
+     * </P>
+     *
+     * @param redirectUri
+     * @param scope
+     * @param state
+     * @return
+     */
+    public String getAuthorizeUrl(String redirectUri, String scope, String state) {
+        if (state == null) {
+            state = "";
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("appid", config.getAppID());
+        data.put("redirect_uri", HttpUtil.UrlEncode(redirectUri));
+        data.put("response_type", "code");
+        data.put("scope", scope);
+        data.put("state", state + "#wechat_redirect");
+        String url = config.getAuthorizeURL() + HttpUtil.toUrl(data);
+
+        return url;
+    }
+
+    /**
+     * 获取授权数据
+     *
+     * @param code
+     * @param callback
+     */
+    public void getAccessToken(@NonNull String code, @NonNull GetAccessTokenCallback callback) {
+        if (StringUtils.isEmptyOrWhitespace(code)) {
+            throw new IllegalArgumentException("缺少必要参数：code！");
+        }
+        if (callback == null) {
+            return;
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("appid", config.getAppID());
+        data.put("secret", config.getAppSecret());
+        data.put("code", code);
+        data.put("grant_type", "authorization_code");
+        String url = config.getAccessTokenURL() + HttpUtil.toUrl(data);
+
+        HttpUtil.HttpGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String result = response.body().string();
+                JSONObject resultObj = JSON.parseObject(result);
+
+                if (resultObj.containsKey("errcode")) {
+                    callback.failure(result);
+                    return;
+                }
+
+                String accessToken = resultObj.getString("access_token");
+                String openId = resultObj.getString("openid");
+
+                callback.success(accessToken, openId);
+            }
+        });
+    }
+
+    public void setAccessTokenToCache(@NonNull String openId, @NonNull String token) {
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            throw new IllegalArgumentException("缺少查询必要参数：openId！");
+        }
+
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+
+        String key = CacheKeyConst.wx_user_token_key + openId;
+        valueOperations.set(key, token);
+    }
+
+    public @Nullable
+    WXAccessTokenModel getAccessToken(@NonNull String code) {
+        if (StringUtils.isEmptyOrWhitespace(code)) {
+            throw new IllegalArgumentException("缺少必要参数：code！");
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("appid", config.getAppID());
+        data.put("secret", config.getAppSecret());
+        data.put("code", code);
+        data.put("grant_type", "authorization_code");
+        String url = config.getAccessTokenURL() + HttpUtil.toUrl(data);
+
+        String body = HttpUtil.HttpGet(url);
+        JSONObject jsonObject = JSON.parseObject(body);
+
+        if (jsonObject.containsKey("errcode")) {
+            return null;
+        }
+
+        WXAccessTokenModel result = jsonObject.toJavaObject(WXAccessTokenModel.class);
+
+        // 缓存access_token，便于以后再获取用户信息
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+        String key = CacheKeyConst.wx_user_token_key + result.getOpenid();
+        valueOperations.set(key, result.getAccess_token(), result.getExpires_in(), TimeUnit.SECONDS);
+
+        // TODO: 缓存住refresh_token
+
+        return result;
+    }
+
+    public String getAccessTokenFormCache(@NonNull String openId) {
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            throw new IllegalArgumentException("缺少查询必要参数：openId！");
+        }
+
+        ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
+
+        String key = CacheKeyConst.wx_user_token_key + openId;
+        String token = valueOperations.get(key);
+
+        if (StringUtils.isEmpty(token)) {
+            // TODO: 刷新获取token
+        }
+
+        return token;
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param accessToken
+     * @param openId
+     * @param callback
+     */
+    public void getUserInfo(@NonNull String accessToken, @NonNull String openId,
+                            @NonNull GetUserInfoCallback callback) {
+        if (StringUtils.isEmptyOrWhitespace(accessToken)) {
+            throw new IllegalArgumentException("缺少必要参数：accessToken！");
+        }
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            throw new IllegalArgumentException("缺少必要参数：openId！");
+        }
+        if (callback == null) {
+            return;
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("access_token", accessToken);
+        data.put("openid", openId);
+        data.put("lang", "zh_CN");
+        String url = config.getUserInfoURL() + HttpUtil.toUrl(data);
+
+        HttpUtil.HttpGet(url, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+                e.printStackTrace();
+                log.error(e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String result = response.body().string();
+                JSONObject resultObj = JSON.parseObject(result);
+
+                if (resultObj.containsKey("errcode")) {
+                    callback.failure(result);
+                    return;
+                }
+
+                WXUserInfoModel userInfo = resultObj.toJavaObject(WXUserInfoModel.class);
+
+                callback.success(userInfo);
+            }
+        });
+    }
+
+    public @Nullable WXUserInfoModel getUserInfo(@NonNull String accessToken, @NonNull String openId) {
+        if (StringUtils.isEmptyOrWhitespace(accessToken)) {
+            throw new IllegalArgumentException("缺少必要参数：accessToken！");
+        }
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            throw new IllegalArgumentException("缺少必要参数：openId！");
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("access_token", accessToken);
+        data.put("openid", openId);
+        data.put("lang", "zh_CN");
+        String url = config.getUserInfoURL() + HttpUtil.toUrl(data);
+
+        String body = HttpUtil.HttpGet(url);
+
+        JSONObject jsonObject = JSON.parseObject(body);
+
+        if (jsonObject.containsKey("errcode")) {
+            return null;
+        }
+
+        WXUserInfoModel userInfo = jsonObject.toJavaObject(WXUserInfoModel.class);
+
+        return userInfo;
+    }
+
+    /**
+     * 统一下单接口
+     *
+     * @return
+     */
+    public Map<String, String> getUnifiedOrderResult(BigDecimal totalFee, String outTradeNo, String spbillCreateIp,
+                                                     String openId) {
+        WXPay wxpay = new WXPay(config);
+
+        totalFee = totalFee.multiply(new BigDecimal(100));
+        LocalDateTime timeStart = LocalDateTime.now();
+        LocalDateTime timeExpire = timeStart.plusHours(2);
+
+        Map<String, String> data = new HashMap<>();
+        data.put("body", "种植红杜鹃");
+        data.put("attach", "公益活动");
+        data.put("out_trade_no", outTradeNo);
+        data.put("total_fee", totalFee.stripTrailingZeros().toPlainString());
+//        data.put("spbill_create_ip", spbillCreateIp);
+        data.put("spbill_create_ip", "123.12.12.123");
+        data.put("time_start", DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(timeStart));
+        data.put("time_expire", DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(timeExpire));
+        data.put("notify_url", config.getPayNotifyUrl());
+        data.put("trade_type", "JSAPI");
+        data.put("openid", openId);
+
+        try {
+            Map<String, String> resp = wxpay.unifiedOrder(data);
+            return resp;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * 查询订单
+     *
+     * @param transactionId 微信订单号
+     * @return
+     */
+    public @Nullable
+    Map<String, String> orderQueryById(String transactionId) {
+        WXPay wxpay = new WXPay(config);
+        Map<String, String> data = new HashMap<>();
+        data.put("transaction_id", transactionId);
+
+        try {
+            Map<String, String> result = wxpay.orderQuery(data);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 查询订单
+     *
+     * @param outTradeNo 商户订单号
+     * @return
+     */
+    public @Nullable
+    Map<String, String> orderQueryByCode(String outTradeNo) {
+        WXPay wxpay = new WXPay(config);
+        Map<String, String> data = new HashMap<>();
+        data.put("out_trade_no", outTradeNo);
+
+        try {
+            Map<String, String> result = wxpay.orderQuery(data);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 生成调用H5支付参数数据
+     *
+     * @param prepayId
+     * @return
+     */
+    public @Nullable
+    Map<String, String> getJsApiPayParameters(String prepayId) {
+        Map<String, String> jsApiParam = new LinkedHashMap<>();
+        jsApiParam.put("appId", config.getAppID());
+        jsApiParam.put("timeStamp", String.valueOf(WXPayUtil.getCurrentTimestamp()));
+        jsApiParam.put("nonceStr", WXPayUtil.generateNonceStr());
+        jsApiParam.put("package", "prepay_id=" + prepayId);
+        jsApiParam.put("signType", WXPayConstants.HMACSHA256);
+
+        try {
+            String sign = WXPayUtil.generateSignature(jsApiParam, config.getKey(), WXPayConstants.SignType.HMACSHA256);
+            jsApiParam.put("paySign", sign);
+            return jsApiParam;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 获取全局唯一接口调用凭据
+     * 有效期7200秒，会缓存
+     */
+    public @Nullable
+    String getGlobalToken() {
+
+        String accessToken = stringRedisTemplate.opsForValue().get(CacheKeyConst.wx_global_token_key);
+
+        if (!StringUtils.isEmpty(accessToken)) {
+            return accessToken;
+        }
+
+        // 缓存中不存在token，那么向微信申请
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("grant_type", "client_credential");
+        data.put("appid", config.getAppID());
+        data.put("secret", config.getAppSecret());
+        String url = config.getTokenURL() + HttpUtil.toUrl(data);
+
+        String result = HttpUtil.HttpGet(url);
+
+        if (result == null) {
+            return null;
+        }
+
+        JSONObject resultObj = JSON.parseObject(result);
+
+        if (resultObj.containsKey("errcode")) {
+            return null;
+        }
+
+        accessToken = resultObj.getString("access_token");
+        Long expiresIn = resultObj.getLong("expires_in");
+
+        stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_global_token_key, accessToken, expiresIn,
+                TimeUnit.SECONDS);
+
+        return accessToken;
+    }
+
+    /**
+     * 获取调用微信JS接口的临时票据
+     * 有效期7200秒，需缓存
+     *
+     * @return
+     */
+    public String getJsApiTicket(String accessToken) {
+        String ticket = stringRedisTemplate.opsForValue().get(CacheKeyConst.wx_ticket_key);
+
+        if (!StringUtils.isEmpty(ticket)) {
+            return ticket;
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("access_token", accessToken);
+        data.put("type", "jsapi");
+        String url = config.getJsApiTicketURL() + HttpUtil.toUrl(data);
+
+        String result = HttpUtil.HttpGet(url);
+
+        if (result == null) {
+            return null;
+        }
+
+        JSONObject resultObj = JSON.parseObject(result);
+
+        if (!resultObj.getString("errmsg").equals("ok")) {
+            return null;
+        }
+
+        ticket = resultObj.getString("ticket");
+        Long expiresIn = resultObj.getLong("expires_in");
+
+        stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_ticket_key, ticket, expiresIn, TimeUnit.SECONDS);
+
+        return ticket;
+    }
+
+    /**
+     * 获取js api权限验证配置
+     *
+     * @param url 当前网页的URL，不包含#及其后面部分
+     * @return
+     */
+    public Map<String, String> getJsApiConfig(String jsApiTicket, String url) {
+
+        String nonceStr = WXPayUtil.generateNonceStr();
+        String timeStamp = String.valueOf(WXPayUtil.getCurrentTimestamp());
+
+        // 配置字段
+        Map<String, String> apiConfig = new LinkedHashMap<>();
+        apiConfig.put("appId", config.getAppID());
+        apiConfig.put("timestamp", timeStamp);
+        apiConfig.put("nonceStr", nonceStr);
+
+        try {
+            String sign = WXJsApiUtil.generateSignature(nonceStr, timeStamp, jsApiTicket, url);
+            apiConfig.put("signature", sign);
+            return apiConfig;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}

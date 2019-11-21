@@ -1,0 +1,29 @@
+<script src="/plugin/jquery/dist/jquery.min.js"></script>
+<script src="/plugin/layer/layer.min.js"></script>
+<script src="/js/rem.js"></script>
+
+<script>
+
+    // window.onload = function() {
+    //
+    // };
+
+    // $(function(){
+    //     layer.load(1, {
+    //         shade: 0.3,
+    //         fixed: true
+    //     });
+    // });
+
+    function showLoad() {
+        layer.load(1, {
+            shade: 0.3,
+            fixed: true
+        });
+    }
+
+    function closeLoad() {
+        layer.closeAll('loading');
+    }
+
+</script>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>支付</title>
+    <div th:replace="shared/layout_header"></div>
+</head>
+<body>
+
+</body>
+
+<div th:replace="shared/layout_scripts"></div>
+<script>
+    $(function () {
+        showLoad();
+
+        let jsApiPay;
+
+        function onBridgeReady() {
+            if (!jsApiPay) {
+                layer.alert("获取支付参数异常", {icon: 1}, function(index) {
+                    location.href = "/home/index";
+                })
+            }
+
+            WeixinJSBridge.invoke('getBrandWCPayRequest', jsApiPay, function (res) {
+                if (res.err_msg == "get_brand_wcpay_request:ok") {
+                    //支付完成
+                    layer.msg('支付成功', {icon: 1});
+
+                    location.href = "/product/index";
+                } else {
+                    // 支付取消
+                    layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {
+
+                        location.reload();
+
+                        layer.close(index);
+                    }, function (index) {
+                        location.href = "/home/index";
+                    });
+
+
+                }
+            });
+        }
+
+        const params = {};
+
+        $.ajax({
+            type: "post",
+            dataType: 'json',
+            url: "/pay/getJsApiPay",
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(params),
+            error: function (res) {
+                closeLoad();
+            },
+            success: function (res) {
+                closeLoad();
+
+                if (res.code) {
+                    // 获取支付参数成功，唤起H5支付
+
+                    jsApiPay = res.data;
+
+                    if (typeof WeixinJSBridge == "undefined") {
+                        if (document.addEventListener) {
+                            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+                        } else if (document.attachEvent) {
+                            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+                        }
+                    } else {
+                        onBridgeReady();
+                    }
+
+                } else {
+                    layer.alert(res.msg, {icon: 2}, function (index) {
+                        history.back(-1);
+
+                        layer.close(index);
+                    });
+                }
+            }
+        });
+    })
+</script>
+</html>
