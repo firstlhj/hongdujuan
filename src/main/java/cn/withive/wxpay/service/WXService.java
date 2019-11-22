@@ -4,6 +4,7 @@ import cn.withive.wxpay.callback.GetAccessTokenCallback;
 import cn.withive.wxpay.callback.GetUserInfoCallback;
 import cn.withive.wxpay.config.WXPayMchConfig;
 import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.model.WXAccessTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
 import cn.withive.wxpay.sdk.JsApi.WXJsApiUtil;
@@ -362,7 +363,7 @@ public class WXService {
     }
 
     /**
-     * 获取全局唯一接口调用凭据
+     * 获取全局唯一接口调用凭据，对接中控服务器接口
      * 有效期7200秒，会缓存
      */
     public @Nullable
@@ -371,6 +372,28 @@ public class WXService {
         String accessToken = stringRedisTemplate.opsForValue().get(CacheKeyConst.wx_global_token_key);
 
         if (!StringUtils.isEmpty(accessToken)) {
+            return accessToken;
+        }
+
+        if (!StringUtils.isEmptyOrWhitespace(config.getTokenServerUrl())) {
+            // 对接中控服务器接口获取微信token
+
+            String result = HttpUtil.HttpGet(config.getTokenServerUrl());
+            if (result == null) {
+                return null;
+            }
+
+            ResModel resultObj = JSON.parseObject(result, ResModel.class);
+
+            if (resultObj.getCode().equals(ResModel.StatusEnum.FAILURE)) {
+                return null;
+            }
+
+            accessToken = (String) resultObj.getData();
+
+            stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_global_token_key, accessToken, 7200,
+                    TimeUnit.SECONDS);
+
             return accessToken;
         }
 

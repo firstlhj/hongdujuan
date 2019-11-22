@@ -58,4 +58,5 @@ WX:
     pay: https://wcdemo.withive.cn/pay/payNotify
     refund: https://wcdemo.withive.cn/pay/refundNotify
   serverUrl: https://wcdemo.withive.cn
+  tokenServerUrl: 
 

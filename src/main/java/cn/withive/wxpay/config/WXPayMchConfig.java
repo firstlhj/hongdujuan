@@ -51,6 +51,10 @@ public class WXPayMchConfig extends WXPayConfig {
     @Value("${WX.serverUrl}")
     private String serverUrl;
 
+    @Getter
+    @Value("${WX.tokenServerUrl}")
+    private String tokenServerUrl;
+
     @Autowired
     private WXPayDomainConfig wxPayDomainConfig;
 
