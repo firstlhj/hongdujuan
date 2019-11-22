@@ -33,6 +33,11 @@ public class CacheKeyConst {
     public static final String user_list_key = "wxpay:wechatUser";
 
     /**
+     * 已支付用户集合 set结构
+     */
+    public static final String user_paid_set_key = "wxpay:wechatUser:paid";
+
+    /**
      * 微信全局token String结构，数据两小时自动过期
      */
     public static final String wx_global_token_key = "wxpay:global_token";

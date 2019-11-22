@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 
 import java.util.Map;
@@ -72,5 +73,13 @@ class RedisTest {
         log.info(JSON.toJSONString(userEntries));
 
         hashOperations.delete(CacheKeyConst.bak_user_list_key, userEntries.keySet().toArray());
+    }
+
+    @Test
+    void test9() {
+        SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
+        setOperations.add(CacheKeyConst.user_paid_set_key, "oXxpqwHdDrBuLmM0e9SU5afT4W6E");
+
+
     }
 }

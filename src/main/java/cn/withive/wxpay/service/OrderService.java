@@ -8,13 +8,8 @@ import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.repository.OrderRepository;
 import cn.withive.wxpay.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
-import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.redis.core.HashOperations;
-import org.springframework.data.redis.core.ListOperations;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.data.redis.core.*;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
@@ -24,9 +19,6 @@ import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import static cn.withive.wxpay.constant.StorageStrategyEnum.database;
-import static cn.withive.wxpay.constant.StorageStrategyEnum.redis;
 
 @Service
 public class OrderService {
@@ -266,6 +258,10 @@ public class OrderService {
 
             // 删除预支付id
             this.removePrepayId(order.getWechatOpenId());
+
+            // 记录已支付用户，已去重
+            SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
+            setOperations.add(CacheKeyConst.user_paid_set_key, order.getWechatOpenId());
 
             return true;
         }
