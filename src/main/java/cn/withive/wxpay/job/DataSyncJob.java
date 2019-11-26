@@ -45,7 +45,7 @@ public class DataSyncJob {
     private StringRedisTemplate stringRedisTemplate;
 
     // 每半小时
-//    @Scheduled(cron = "0 0/30 * * * ? ")
+    @Scheduled(cron = "0 0/30 * * * ? ")
 //@Scheduled(cron = "0 0/1 * * * ? ")
     public void work() {
         long start = System.currentTimeMillis();
