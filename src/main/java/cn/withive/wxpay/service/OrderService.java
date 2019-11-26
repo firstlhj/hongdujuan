@@ -305,6 +305,10 @@ public class OrderService {
             Order entity = JSON.parseObject(str, Order.class);
 
             result = entity.getStatus() == status;
+
+            if (!result) {
+                result = orderRepository.existsByWechatOpenIdAndStatus(openId, status);
+            }
         }
 
         return result;
