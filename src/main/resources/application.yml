@@ -7,8 +7,8 @@ spring:
   # data source config
   datasource:
     url: jdbc:mysql://rm-bp154bkicd65e8igceo.mysql.rds.aliyuncs.com:3306/wechat_pay?serverTimezone=GMT%2B8&characterEncoding=utf-8&allowMultiQueries=true
-    username: root
-    password: ${datasource.password}
+    username: wechat_pay_xiao_hei
+    password: ubsUzy5K6B7BJmYy
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # jpa config
@@ -35,10 +35,10 @@ spring:
 
   #redis config
   redis:
-    database: 2
-    host: 47.107.58.79
-    port: 16379
-    password: ${redis.password}
+    database: 0
+    host: 120.77.154.162
+    port: 18088
+    password: ubsUzy5K6B7BJmYy123!@qwWEWQQs
     lettuce:
       pool:
         max-active: 8
