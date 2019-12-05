@@ -48,15 +48,15 @@ spring:
 
 # wechat config
 WX:
-  appId: wxe79225eb01043233
-  mchId: 1562360291
-  key:  a036e0812bcd4b7989125012570a8423
-  appSecret: fe357d19a0655a18d86cb5d4f822a5c2
-  SSlCertPath: C:/wxcert/apiclient_cert.p12
-  SSlCertPassword: 1510236951
+  appId: wxb0fd8d11f36f012c
+  mchId: 1564034741
+  key:  td666666666666666666666666666666
+  appSecret: 9c9cb54e3b9d2684ecdf8b39b17c3cc6
+  SSlCertPath:
+  SSlCertPassword:
   notifyUrl:
-    pay: https://wcdemo.withive.cn/pay/payNotify
-    refund: https://wcdemo.withive.cn/pay/refundNotify
-  serverUrl: https://wcdemo.withive.cn
+    pay: http://www.hongdujuan.xiaoheikeji.net/pay/payNotify
+    refund: http://www.hongdujuan.xiaoheikeji.net/pay/refundNotify
+  serverUrl: http://www.hongdujuan.xiaoheikeji.net
   tokenServerUrl:
 
