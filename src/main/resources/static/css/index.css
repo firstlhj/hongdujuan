@@ -41,6 +41,9 @@ img{
     background-color: #ffdda4; 
     margin: .06rem 0;
 }
+personal-box p{
+    font-size: .24rem;
+}
 .inherited-text{
     width: 78%;
     margin: 0 auto;

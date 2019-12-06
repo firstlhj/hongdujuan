@@ -62,7 +62,7 @@
             </div>
             <div class="box-4">
                 <a href='/wxpay/product/index'>
-                    <p style="font-size: .6rem;" id="myOrder">我的认种</p>
+                    <p style="font-size: .6rem;" id="myOrder">我已认种</p>
                 </a>
             </div>
         </div>
@@ -113,9 +113,9 @@
         let div = document.querySelector('.levitate');
         const osTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
         if (isIphonex()) {
-            osTop > 620 ? div.classList.remove('box-6') : div.classList.add('box-6');
+            osTop > 520 ? div.classList.remove('box-6') : div.classList.add('box-6');
         } else {
-            osTop > 720 ? div.classList.remove('box-6') : div.classList.add('box-6');
+            osTop > 620 ? div.classList.remove('box-6') : div.classList.add('box-6');
         }
 
     }

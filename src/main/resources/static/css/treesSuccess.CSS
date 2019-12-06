@@ -77,13 +77,13 @@ a{
 .cert{
     width:2.6rem;
     height: 0.8rem;
-    background-color: red;
+    /*background-color: red;*/
     margin: 0 auto;
     border-radius: 30px;
     text-align: center;
     line-height: 0.8rem;
     font-size:.4rem;
-    color: #fff;
+    color: red;
     border:1px solid #fff;
     margin-top: .6rem;
     letter-spacing: .03rem;
