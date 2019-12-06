@@ -130,9 +130,7 @@
 
         // 下单按钮
         $("#confirmOrder").click(function () {
-            alert("you click me");
-
-            const orderData = {
+            var orderData = {
                 productCode: "001"
             };
 
@@ -149,6 +147,10 @@
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }
+                },
+                error: function(res) {
+                    layer.alert(JSON.stringify(res), {icon: 2});
+                    console.log(res);
                 }
             });
         });
