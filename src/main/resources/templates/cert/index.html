@@ -2,14 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>荣誉证书</title>
+    <div th:replace="shared/layout_header"></div>
     <style>
         @font-face {
             font-family: REGULAR;
-            src: url(/fonts/SOURCEHANSANSSC-REGULAR.OTF)
+            src: url(/wxpay/fonts/SOURCEHANSANSSC-REGULAR.OTF)
         }
 
         body,
@@ -22,13 +20,13 @@
         }
 
         body {
-            background: url('/img/bg.png') no-repeat;
+            background: url('/wxpay/img/bg.png') no-repeat;
             background-size: 100% 100%;
             background-color: rgb(229, 42, 47);
         }
 
         .center {
-            background: url('/img/zhengshu.png') no-repeat;
+            background: url('/wxpay/img/zhengshu.png') no-repeat;
             background-size: 100% 100%;
             /* height: 12rem; */
             width: 80%;
@@ -107,7 +105,7 @@
         </div>
     </div>
     <div id="guide">
-        <img src="/img/weix.png" alt="" id="weix">
+        <img src="/wxpay/img/weix.png" alt="" id="weix">
     </div>
 </body>
 
@@ -162,7 +160,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/jspai/getConfig",
+            url: "/wxpay/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
