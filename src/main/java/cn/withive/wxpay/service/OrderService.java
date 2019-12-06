@@ -191,6 +191,7 @@ public class OrderService {
 
     /**
      * 根据订单实体查找订单实体
+     *
      * @param order
      * @return
      */
@@ -200,7 +201,7 @@ public class OrderService {
         switch (storageStrategy) {
             case database:
                 entity = orderRepository.findById(order.getId())
-                        .orElseThrow(()-> new EntityNotFoundException("订单实体未找到"));
+                        .orElseThrow(() -> new EntityNotFoundException("订单实体未找到"));
                 break;
             case redis:
                 HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
@@ -245,7 +246,8 @@ public class OrderService {
                 case redis:
                     HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
                     hashOperations.put(CacheKeyConst.order_list_key, order.getWechatOpenId(), JSON.toJSONString(order));
-                    hashOperations.put(CacheKeyConst.bak_order_list_key, order.getWechatOpenId(), JSON.toJSONString(order));
+                    hashOperations.put(CacheKeyConst.bak_order_list_key, order.getWechatOpenId(),
+                            JSON.toJSONString(order));
                     break;
             }
 
@@ -262,6 +264,15 @@ public class OrderService {
             // 记录已支付用户，已去重
             SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
             setOperations.add(CacheKeyConst.user_paid_set_key, order.getWechatOpenId());
+
+            // 统计用户订单数量
+            HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
+            String userOrderCount = hashOperations.get(CacheKeyConst.user_order_list_key, order.getWechatOpenId());
+            Integer count = 0;
+            if (!StringUtils.isEmpty(userOrderCount)) {
+                count = Integer.parseInt(userOrderCount);
+            }
+            hashOperations.put(CacheKeyConst.user_order_list_key, order.getWechatOpenId(), String.valueOf(++count));
 
             return true;
         }

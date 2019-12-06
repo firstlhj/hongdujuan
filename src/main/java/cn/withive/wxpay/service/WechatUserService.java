@@ -75,4 +75,15 @@ public class WechatUserService {
 
         return isExist;
     }
+
+    public int getOrderCount(String openId) {
+        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
+        String userOrderCount = hashOperations.get(CacheKeyConst.user_order_list_key, openId);
+        Integer count = 0;
+        if (!StringUtils.isEmpty(userOrderCount)) {
+            count = Integer.parseInt(userOrderCount);
+        }
+
+        return count;
+    }
 }

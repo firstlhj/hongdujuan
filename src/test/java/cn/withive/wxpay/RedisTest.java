@@ -12,6 +12,7 @@ import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.Map;
 
@@ -79,7 +80,16 @@ class RedisTest {
     void test9() {
         SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
         setOperations.add(CacheKeyConst.user_paid_set_key, "oXxpqwHdDrBuLmM0e9SU5afT4W6E");
+    }
 
-
+    @Test
+    void test10() {
+        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
+        String userOrderCount = hashOperations.get(CacheKeyConst.user_order_list_key, "ovE2Av_jBeLfh_XdDzjGlLbHDYk4");
+        Integer count = 0;
+        if (!StringUtils.isEmpty(userOrderCount)) {
+            count = Integer.parseInt(userOrderCount);
+        }
+        hashOperations.put(CacheKeyConst.user_order_list_key, "ovE2Av_jBeLfh_XdDzjGlLbHDYk4", String.valueOf(++count));
     }
 }
