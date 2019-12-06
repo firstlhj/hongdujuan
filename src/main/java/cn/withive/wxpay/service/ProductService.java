@@ -51,18 +51,18 @@ public class ProductService {
             result.setName("小树");
             result.setCode("001");
             result.setAmount(new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP));
-            // 不管什么存储策略，产品数据就是要缓存
             hashOperations.put(CacheKeyConst.product_list_key, code, JSON.toJSONString(result));
+            productRepository.save(result);
 
-            StorageStrategyEnum storageStrategy = storageConfig.getStrategy();
-            switch (storageStrategy) {
-                case database:
-                    productRepository.save(result);
-                    break;
-                case redis:
-                    hashOperations.put(CacheKeyConst.bak_product_list_key, code, JSON.toJSONString(result));
-                    break;
-            }
+//            StorageStrategyEnum storageStrategy = storageConfig.getStrategy();
+//            switch (storageStrategy) {
+//                case database:
+//                    productRepository.save(result);
+//                    break;
+//                case redis:
+//                    hashOperations.put(CacheKeyConst.bak_product_list_key, code, JSON.toJSONString(result));
+//                    break;
+//            }
         }
 
         return result;
