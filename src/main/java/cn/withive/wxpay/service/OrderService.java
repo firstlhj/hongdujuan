@@ -325,9 +325,9 @@ public class OrderService {
 
         Long size = listOperations.leftPush(CacheKeyConst.order_top_key, JSON.toJSONString(order));
 
-        if (size != null && size >= limit) {
-            listOperations.trim(CacheKeyConst.order_top_key, 0, limit - 1);
-        }
+//        if (size != null && size >= limit) {
+//            listOperations.trim(CacheKeyConst.order_top_key, 0, limit - 1);
+//        }
     }
 
     /**
