@@ -17,8 +17,7 @@ public class BaseEntity implements Serializable {
 
 
     @Id
-    @Column(name = "id", nullable = false)
-    @Size(max = 32)
+    @Column(name = "id", nullable = false, length = 32)
     @Getter
     @Setter
     private String id;

@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/css/index.css">
+    <link rel="stylesheet" href="/wepay/css/index.css">Z
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
 </head>
 <body>
 <div class="content">
     <header>
-        <img src="/img/img1.gif" alt="">
+        <img src="/wepay/img/img1.gif" alt="">
     </header>
     <div class="box-1"></div>
     <div class="box-2 box-6">
@@ -81,7 +81,7 @@
             wx.updateTimelineShareData({
                 title: '种植红杜鹃', // 分享标题
                 link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '/img/shu.png', // 分享图标
+                // imgUrl: '/img/shu.png', // 分享图标
                 success: function () {
                     // 设置成功
                 }
@@ -91,7 +91,7 @@
                 title: '种植红杜鹃', // 分享标题
                 desc: '为主席家乡种植红杜鹃', // 分享描述
                 link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                imgUrl: '/img/shu.png', // 分享图标
+                // imgUrl: '/img/shu.png', // 分享图标
                 success: function () {
                     // 设置成功
                 }
@@ -107,7 +107,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/jspai/getConfig",
+            url: "/wepay/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
@@ -138,13 +138,13 @@
             $.ajax({
                 type: "post",
                 dataType: 'json',
-                url: "/order/create",
+                url: "/wepay/order/create",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(orderData),
                 success: function (res) {
                     if (res.code) {
                         // 下单成功跳转支付
-                        location.href = "/pay/index";
+                        location.href = "/wepay/pay/index";
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }
@@ -153,7 +153,7 @@
         });
 
         $("#myOrder").click(function () {
-            location.href = "/product/index";
+            location.href = "/wepay/product/index";
         });
     })
 </script>

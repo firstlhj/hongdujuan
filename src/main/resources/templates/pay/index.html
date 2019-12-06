@@ -18,7 +18,7 @@
         function onBridgeReady() {
             if (!jsApiPay) {
                 layer.alert("获取支付参数异常", {icon: 1}, function(index) {
-                    location.href = "/home/index";
+                    location.href = "/wepay/home/index";
                 })
             }
 
@@ -27,7 +27,7 @@
                     //支付完成
                     layer.msg('支付成功', {icon: 1});
 
-                    location.href = "/product/index";
+                    location.href = "/wepay/product/index";
                 } else {
                     // 支付取消
                     layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {
@@ -36,7 +36,7 @@
 
                         layer.close(index);
                     }, function (index) {
-                        location.href = "/home/index";
+                        location.href = "/wepay/home/index";
                     });
 
 
@@ -49,7 +49,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/pay/getJsApiPay",
+            url: "/wepay/pay/getJsApiPay",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {

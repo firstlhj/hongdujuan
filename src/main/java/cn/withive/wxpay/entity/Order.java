@@ -4,6 +4,7 @@ import cn.withive.wxpay.constant.OrderStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -24,7 +25,7 @@ public class Order extends BaseEntity {
 
     @Getter
     @Setter
-    @Size(max = 32)
+    @Column(length = 32)
     private String productId;
 
     @Getter
