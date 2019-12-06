@@ -34,11 +34,11 @@ a{
     padding: .05rem .2rem;
     text-align: center;
     border-radius: 12px;
-    color: #fff;
+    color: red;
     margin-top: .26rem;
     font-size: .38rem;
     letter-spacing: .05rem;
-    background-image: linear-gradient(to right, #fc474d, #d02425 );
+    /*background-image: linear-gradient(to right, #fc474d, #d02425 );*/
 }
 
 .center {
@@ -61,9 +61,9 @@ a{
     background-size: 100%;
     margin: 0 auto;
     /* text-align: center; */
-    height: 40px;
+    height: 36px;
     color: #fff;
-    line-height: 40px;
+    line-height: 36px;
     font-size: .38rem;
     letter-spacing: .03rem;
 }
