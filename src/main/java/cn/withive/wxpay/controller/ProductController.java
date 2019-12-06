@@ -80,7 +80,21 @@ public class ProductController extends BaseController {
             // 未付款
             orderService.checkOvertime(order);
 
-//            return homeView;
+            boolean isExist = orderService.existsByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+
+            if (isExist) {
+                // 当前用户曾经支付过订单
+                Long rank = orderService.getRank(openId);
+                WechatUser wechatUser = wechatUserService.findByOpenId(openId);
+                model.setRank(rank);
+                model.setAvatar(wechatUser.getAvatar());
+                model.setNickname(wechatUser.getNickname());
+                productView.addObject("model", model);
+                return productView;
+            } else {
+                // 当前用户没有下过单
+                return homeView;
+            }
         }
 
         // 订单已完成支付
