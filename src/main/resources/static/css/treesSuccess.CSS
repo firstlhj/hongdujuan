@@ -6,7 +6,7 @@ p {
 }
 
 body {
-    background: url('/wxpay/img/renzhongsucess.png') no-repeat;
+    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
     height: 100vh;
     background-size: 100%;
     background-color: #e52a2f;
@@ -29,7 +29,7 @@ a{
 }
 
 .whact-name {
-    width: 20%;
+    width: 50%;
     margin: 0 auto;
     padding: .05rem .2rem;
     text-align: center;
@@ -57,7 +57,7 @@ a{
 
 .tree-number .tree-my {
     width: 40%;
-    background: url('/wxpay/img/numberBg.png');
+    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/numberBg.png');
     background-size: 100%;
     margin: 0 auto;
     /* text-align: center; */
@@ -77,13 +77,13 @@ a{
 .cert{
     width:2.6rem;
     height: 0.8rem;
-    /*background-color: red;*/
+    background-color: red;
     margin: 0 auto;
     border-radius: 30px;
     text-align: center;
     line-height: 0.8rem;
     font-size:.4rem;
-    color: red;
+    color: #fff;
     border:1px solid #fff;
     margin-top: .6rem;
     letter-spacing: .03rem;
