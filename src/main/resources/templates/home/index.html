@@ -2,14 +2,14 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wepay/css/index.css">Z
+    <link rel="stylesheet" href="/wxpay/css/index.css">
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
 </head>
 <body>
 <div class="content">
     <header>
-        <img src="/wepay/img/img1.gif" alt="">
+        <img src="/wxpay/img/img1.gif" alt="">
     </header>
     <div class="box-1"></div>
     <div class="box-2 box-6">
@@ -107,7 +107,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/wepay/jspai/getConfig",
+            url: "/wxpay/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
@@ -138,13 +138,13 @@
             $.ajax({
                 type: "post",
                 dataType: 'json',
-                url: "/wepay/order/create",
+                url: "/wxpay/order/create",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(orderData),
                 success: function (res) {
                     if (res.code) {
                         // 下单成功跳转支付
-                        location.href = "/wepay/pay/index";
+                        location.href = "/wxpay/pay/index";
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }
@@ -153,7 +153,7 @@
         });
 
         $("#myOrder").click(function () {
-            location.href = "/wepay/product/index";
+            location.href = "/wxpay/product/index";
         });
     })
 </script>

@@ -55,8 +55,8 @@ WX:
   SSlCertPath:
   SSlCertPassword:
   notifyUrl:
-    pay: http://www.hongdujuan.xiaoheikeji.net/wepay/pay/payNotify
-    refund: http://www.hongdujuan.xiaoheikeji.net/wepay/pay/refundNotify
-  serverUrl: http://www.hongdujuan.xiaoheikeji.net/wepay
+    pay: http://www.hongdujuan.xiaoheikeji.net/wxpay/pay/payNotify
+    refund: http://www.hongdujuan.xiaoheikeji.net/wxpay/pay/refundNotify
+  serverUrl: http://www.hongdujuan.xiaoheikeji.net/wxpay
   tokenServerUrl:
 
