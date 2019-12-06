@@ -1,0 +1,209 @@
+body {
+    background: url('../img/bg.png') no-repeat;
+    background-size: 100%;
+}
+
+div,
+h1,
+h2,
+h3,
+p,ul,li {
+    margin: 0;
+    padding: 0;
+}
+li {
+    list-style: none;
+}
+.cc {
+    margin-top: .36rem;
+    overflow: hidden;
+}
+@font-face {
+    font-family: MILanPro;
+    src: url(../fonts/YournameD7HomeHalf.ttf)
+}
+
+@font-face {
+    font-family: MMEDIUM;
+    src: url(../fonts/SOURCEHANSANSSC-MEDIUM.OTF)
+}
+
+@font-face {
+    font-family: LIGHT;
+    src: url(../fonts/DINPro-Light.otf)
+}
+@font-face {
+    font-family: REGULAY;
+    src: url(../fonts/DINPro-Regular.otf)
+}
+.header {
+    width: 100%;
+    display: flex;
+}
+
+.title {
+    width: 66%;
+    margin-left: 1rem;
+    height: 1.1rem;
+    line-height: .7rem;
+    background: url('../img/left.png') no-repeat;
+    background-size: 100%;
+}
+
+.title span {
+    display: inline-block;
+    font-size: .36rem;
+}
+
+.time {
+    width: 34%;
+    background: url('../img/di.png') no-repeat;
+    background-size: 100%;
+    height: 1.4rem;
+    font-size: .34rem;
+    font-family: MILanPro;
+}
+
+.time .time-center {
+    display: flex;
+    margin: .72rem .9rem 0 .5rem;
+}
+
+.time-center span {
+    padding: .1rem 0;
+}
+
+.time-center span:first-of-type {
+    width: 50%;
+    text-align: right;
+    color: #fff;
+    letter-spacing: .03rem;
+}
+
+.time-center span:nth-child(2) {
+    width: 40%;
+    text-align: right;
+    color: #65c2ff;
+    letter-spacing: .05rem;
+}
+
+.centern {
+    display: flex;
+}
+
+.centern .conter-right {
+    width: 28%;
+    background: url('../img/liebiaodiban.png') no-repeat;
+    background-size: 100%;
+    margin: .2rem auto;
+    position: relative;
+    height: 7.4rem;
+    padding-top: .3rem;
+    overflow: hidden;
+    margin-right: .6rem;
+}
+
+.item {
+    font-size: .16rem;
+    display: flex;
+    margin: .2rem;
+    height: .38rem;
+    line-height: .38rem;
+}
+
+.item-left {
+    width: 30%;
+    display: flex;
+}
+
+.item-left .item-name {
+    margin-left: .2rem;
+    color: #4979dd;
+    font-size: .18rem;
+    font-weight: 400;
+    font-family: MMEDIUM;
+}
+
+.item-center {
+    width: 40%;
+    text-align: center;
+}
+
+.item-right {
+    width: 27%;
+    text-align: right;
+    color: #4979dd;
+    font-family: LIGHT;
+}
+
+#main {
+    width: 50%;
+    background: url('../img/map.png') no-repeat;
+    background-size: 100%;
+    margin-left: 10%;
+    position: relative;
+    top: -.62rem;
+    left: 0;
+    font-size: .16rem;
+}
+
+.main-bottom{
+  position: absolute;
+  bottom: -1rem;
+  left:0; 
+  font-size: .16rem;
+  margin: 0 auto;
+  display: flex;
+}
+.access{
+    flex: 1;
+    display: flex;
+    width: 3.6rem;
+}
+.access .access-img{
+    width: 40%;
+}
+.access .access-number{
+    width: 50%;
+    text-align: center;
+}
+.access .access-number .p1{
+    color: #00cefa;
+    font-size: .16rem;
+    margin-bottom: .06rem;
+}
+.access .access-number .p2{
+    color: #fff;
+    font-size: .16rem;
+    margin-top: .06rem;
+}
+.access .access-number .number{
+    display: flex;
+    font-family: LIGHT;
+    background-color: #041837;
+    margin: 0 .12rem;
+    box-sizing: content-box;
+}
+.access .access-number .number div:nth-child(1){
+    width: 6%;
+    border-top: 1px solid #79f6f7;
+    border-bottom: 1px solid  #79f6f7;
+    margin-left: .13rem;
+}
+.access .access-number .number div:nth-child(2){
+    width: 70%;
+    padding: .06rem 0;
+    border-top: 1px solid #4696a5;
+    border-bottom: 1px solid #4696a5;
+    font-size: .28rem;
+    margin: 0 .03rem;
+    box-sizing: border-box;
+    /* margin: 0 .24rem; */
+    letter-spacing: .02rem;
+    color: #fff;
+}
+.access .access-number .number div:nth-child(3){
+    width: 6%;
+    border-top: 1px solid  #79f6f7;
+    border-bottom: 1px solid  #79f6f7;
+}

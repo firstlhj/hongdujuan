@@ -53,6 +53,7 @@ public class HomeController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId, String code,
                               String state) {
         ModelAndView view = new ModelAndView("home/index");
+        view.addObject("project", projectName);
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             if (StringUtils.isEmptyOrWhitespace(code)) {

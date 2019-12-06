@@ -4,6 +4,7 @@ import cn.withive.wxpay.model.ResModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -20,6 +21,9 @@ public class BaseController {
 
     @Autowired
     protected HttpServletRequest request;
+
+    @Value("${project.name}")
+    protected String projectName;
 
     protected ResModel success(String msg) {
         ResModel resModel = new ResModel();

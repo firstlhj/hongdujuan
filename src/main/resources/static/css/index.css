@@ -1,27 +1,70 @@
-body,.content div,.content p{
+@font-face {
+    font-family: REGULAR;
+    src: url(../fonts/SOURCEHANSANSSC-REGULAR.OTF)
+}
+a{
+    text-decoration:none; 
+}
+body,div,p{
     padding: 0;
     margin: 0;
-    background-color: rgb(229,42, 47);
+    font-size: .16rem;
+    color: #ffdda4;
+    font-family: REGULAR;
+}
+p{
+    letter-spacing: .03rem;
 }
 img{
     width: 100%;
     display: block;
 }
-.box-1{
-    background: url(../img/img2.gif) no-repeat;
-    background-size: 100%;
+.details{
+    background: url(../img/img2.jpg) no-repeat;
+    background-size: 100% 100%;
     height: 28rem;
 }
-.box-2{
+.details .details-title{
+    width: 60%; 
+    margin: 0 auto; 
+    padding-top: 2rem;
+}
+.personal .personal-text{
+    margin:.75rem 0 0 1.5rem;
+}
+.personal-text p:nth-child(1){
+    font-size:.36rem;
+}
+.personal-text .personal-box{
+    height: 1px; 
+    width: 80px; 
+    background-color: #ffdda4; 
+    margin: .06rem 0;
+}
+.inherited-text{
+    width: 78%;
+    margin: 0 auto;
+    margin-top: .5rem;
+    font-size: .34rem;
+}
+
+/* .center-box {
+   margin-top: .4rem;
+} */
+.personal .personal-title{
+   width: 86%;
+   margin: .2rem auto;
+}
+.levitate{
     /* display: flex; */
     text-align: center;
     width: 100%;
-    border: 2px solid pink;
+    border: 2px solid #fdcea4;
     color: #fdcea2;
-    font-size: .6rem;
     font-weight: 700;
     padding: 10px 0;
     display: inline-block;
+    background-color: #c51110;
 }
 .box-6{
     position: fixed;
@@ -32,15 +75,19 @@ img{
 .box-3{
     display: inline-block;
     width: 46%;
+    font-size: .6rem;
 }
 .box-4{
     width: 50%;
-    border-left: 2px solid pink;
+    border-left: 2px solid #fdcea4;
     display: inline-block;
+    font-size: .6rem;
     /* display: none; */
 }
 .footer{
     text-align: center;
-    font-size: .14rem;
+    font-size: .4rem;
+    color: #333333;
     padding: .56rem 0;
+    background-color: #ba1418;
 }

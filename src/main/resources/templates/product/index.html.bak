@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <link rel="stylesheet" href="/wxpay/css/treesSuccess.css">
+    <title>认种中心</title>
+    <div th:replace="shared/layout_header"></div>
+</head>
+
+<body>
+<div class="content">
+    <header>
+        <div class="whact-img">
+            <img th:src="${model.getAvatar()}" alt="">
+        </div>
+        <div class="whact-name">
+            <p th:text="${model.getNickname()}">深情楠楠</p>
+        </div>
+    </header>
+    <div class="center">
+        <div class="tree">
+            <img style="margin-left: 1.6rem;width: 60%;" src="/wxpay/img/shu.png" alt="">
+        </div>
+        <div class="tree-number">
+            <div class="tree-my">
+                <p th:text="${model.getRank()}">0</p>
+            </div>
+        </div>
+        <div class="content-title">
+            <p style="text-shadow:2px 2px 2px #a31b1f ">我为主席家乡种棵红杜鹃</p>
+        </div>
+    </div>
+    <footer class="footer">
+        <p>由小黑物联科技有限公司提供技术支持</p>
+    </footer>
+</div>
+</body>
+
+<div th:replace="shared/layout_scripts"></div>
+</html>
+<script>
+    $(function () {
+        showLoad();
+
+        closeLoad();
+    });
+</script>

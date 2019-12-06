@@ -1,0 +1,78 @@
+body,.content div,.content p {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background: url('../img/renzhongsucess.png') no-repeat;
+    height: 100vh;
+    background-size: 100%;
+    background-color: #e52a2f;
+}
+
+img {
+    width: 100%;
+    display: block;
+}
+
+.whact-img {
+    width: 16%;
+    border: 2px solid red;
+    border-radius: 50%;
+    margin: 0 auto !important;
+    margin-top: 1rem !important;
+}
+
+.whact-name {
+    width: 20%;
+    margin: 0 auto !important;
+    padding: .05rem .2rem !important;
+    text-align: center;
+    border-radius: 12px;
+    color: #fff;
+    margin-top: .26rem !important;
+    font-size: .38rem;
+    letter-spacing: .05rem;
+    background-image: linear-gradient(to right, #fc474d, #d02425 );
+}
+
+.center {
+    text-align: center;
+}
+
+.tree {
+    width: 100vw;
+    margin-top: 4rem!important;
+}
+
+.tree-number {
+    width: 100vw;
+    margin-top: .36rem!important;
+}
+
+.tree-number .tree-my {
+    width: 40%;
+    background: url('../img/numberBg.png');
+    background-size: 100%;
+    margin: 0 auto!important;
+    /* text-align: center; */
+    height: 40px;
+    color: #fff;
+    line-height: 40px;
+    font-size: .38rem;
+    letter-spacing: .03rem;
+}
+
+.content-title {
+    font-size: .36rem;
+    margin-top: .3rem!important;
+    color: #fff;
+    letter-spacing: .03rem;
+}
+
+.footer {
+    text-align: center;
+    font-size: .14rem;
+    padding: 1rem 0!important;
+    color: #842407;
+}
