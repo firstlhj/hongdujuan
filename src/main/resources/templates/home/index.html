@@ -27,7 +27,7 @@
 </body>
 
 <div th:replace="shared/layout_scripts"></div>
-<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 </html>
 
 <script>
@@ -130,6 +130,7 @@
 
         // 下单按钮
         $("#confirmOrder").click(function () {
+            alert("you click me");
 
             const orderData = {
                 productCode: "001"
