@@ -157,7 +157,7 @@ public class OrderService {
         if (StringUtils.isEmpty(str)) {
             // 缓存中不存在，去数据库中查
             List<Order> orders = orderRepository.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
-            if (orders != null) {
+            if (!orders.isEmpty()) {
                 result = orders.get(0);
             }
         } else {
