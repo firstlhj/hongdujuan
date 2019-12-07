@@ -34,6 +34,11 @@ public class OrderService {
 
     @Autowired
     private StorageConfig storageConfig;
+    
+    public List<Order> findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status) {
+        List<Order> result = orderRepository.findByWechatOpenIdAndStatus(openId, status);
+        return result;
+    }
 
     /**
      * 获取已支付订单总数
