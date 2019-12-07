@@ -31,19 +31,27 @@ public class OrderController extends BaseController {
     @ResponseBody
     public ListModel list(@CookieValue(value = "openId", required = false) String openId) {
         if (StringUtils.isEmptyOrWhitespace(openId)) {
-            return fail("创建订单缺少必要参数：微信用户id");
+            ListModel resModel = new ListModel();
+            resModel.setMsg("创建订单缺少必要参数：微信用户id");
+            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            return resModel;
         }
 
         boolean exists = wechatUserService.existsByOpenId(openId);
         if (!exists) {
-            // 不存在此用户
-            return fail("不存在此用户");
+            ListModel resModel = new ListModel();
+            resModel.setMsg("不存在此用户");
+            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            return resModel;
         }
 
         List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
 
         if (orders == null) {
-            return fail("当前用户未曾下单");
+            ListModel resModel = new ListModel();
+            resModel.setMsg("当前用户未曾下单");
+            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            return resModel;
         }
 
         ListModel model = new ListModel();
