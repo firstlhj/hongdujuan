@@ -69,6 +69,9 @@ public class ProductController extends BaseController {
                 model.setAvatar(wechatUser.getAvatar());
                 model.setNickname(wechatUser.getNickname());
                 productView.addObject("model", model);
+
+                List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+                productView.addObject("orders", orders);
                 return productView;
             } else {
                 // 当前用户没有下过单

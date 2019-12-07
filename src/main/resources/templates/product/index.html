@@ -9,7 +9,7 @@
 <body>
 <header>
     <div class="whact-img">
-        <img style="border-radius: 20px;" th:src="${model.getAvatar()}" alt="">
+        <img style="border-radius: 50%;" th:src="${model.getAvatar()}" alt="">
     </div>
     <div class="whact-name">
         <p th:text="${model.getNickname()}">深情楠楠</p>
@@ -39,13 +39,13 @@
 </div>
 <div class="popup">
     <div class="detail">
-        <span style="width: 30%;">付款时间</span>
+        <span style="width: 27%;">付款时间</span>
         <span style="width: 30%;">订单金额</span>
         <span style="width: 26%;">认种棵数</span>
     </div>
     <div th:each="order:${orders}">
-        <div class="detail">
-            <span style="width: 30%;" th:text="${#temporals.format(order.getPayTime(), 'yyyy-MM-dd')}">
+        <div class="detail" style="font-size: .28rem">
+            <span style="width: 35%;" th:text="${#temporals.format(order.getPayTime(), 'yyyy-MM-dd')}">
                 11.26
             </span>
             <span style="width: 30%;" th:text="${order.getAmount()}">3152</span>
