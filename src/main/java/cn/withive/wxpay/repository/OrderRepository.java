@@ -18,4 +18,6 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Override
     @Transactional
     <S extends Order> List<S> saveAll(Iterable<S> entities);
+    
+    List<Order> findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status);
 }
