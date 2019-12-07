@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
+import java.util.List;
+
 /**
  * @author qiu xiaobing
  * @date 2019/11/17 16:35
@@ -90,6 +92,9 @@ public class ProductController extends BaseController {
                 model.setAvatar(wechatUser.getAvatar());
                 model.setNickname(wechatUser.getNickname());
                 productView.addObject("model", model);
+
+                List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+                productView.addObject("orders", orders);
                 return productView;
             } else {
                 // 当前用户没有下过单
@@ -107,6 +112,9 @@ public class ProductController extends BaseController {
         model.setAvatar(wechatUser.getAvatar());
         model.setNickname(wechatUser.getNickname());
         productView.addObject("model", model);
+
+        List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+        productView.addObject("orders", orders);
 
         return productView;
     }

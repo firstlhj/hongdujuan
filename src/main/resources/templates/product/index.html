@@ -43,11 +43,16 @@
         <span style="width: 30%;">订单金额</span>
         <span style="width: 26%;">认种棵数</span>
     </div>
-    <div class="detail">
-        <span style="width: 30%;">11.26</span>
-        <span style="width: 30%;">3152</span>
-        <span style="width: 18%;">2345</span>
+    <div th:each="order:${orders}">
+        <div class="detail">
+            <span style="width: 30%;" th:text="${#temporals.format(order.getPayTime(), 'yyyy-MM-dd HH:mm:ss')}">
+                11.26
+            </span>
+            <span style="width: 30%;" th:text="${order.getAmount()}">3152</span>
+            <span style="width: 18%;" th:text="${orders.size()}">2345</span>
+        </div>
     </div>
+
     <div class="down">
         <p>关闭</p>
     </div>
