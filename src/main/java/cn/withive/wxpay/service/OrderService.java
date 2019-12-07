@@ -17,6 +17,7 @@ import org.thymeleaf.util.StringUtils;
 
 import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -162,7 +163,7 @@ public class OrderService {
         } else {
             // 缓存中存在，反序列化
             Order entity = JSON.parseObject(str, Order.class);
-            if (entity.getStatus() == status) {
+            if (entity.getStatus() == OrderStatusEnum.Created) {
                 result = entity;
             }
         }

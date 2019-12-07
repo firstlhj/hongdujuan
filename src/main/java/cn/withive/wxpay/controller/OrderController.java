@@ -3,19 +3,19 @@ package cn.withive.wxpay.controller;
 import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.Product;
+import cn.withive.wxpay.model.ListModel;
 import cn.withive.wxpay.model.OrderModel;
 import cn.withive.wxpay.model.ResModel;
-import cn.withive.wxpay.model.ListModel;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.ProductService;
+import cn.withive.wxpay.service.WechatUserService;
 import cn.withive.wxpay.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.List;
 
 @Controller
 @RequestMapping("/order")
@@ -27,13 +27,16 @@ public class OrderController extends BaseController {
     @Autowired
     private ProductService productService;
 
+    @Autowired
+    private WechatUserService wechatUserService;
+
     @PostMapping("/list")
     @ResponseBody
     public ListModel list(@CookieValue(value = "openId", required = false) String openId) {
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             ListModel resModel = new ListModel();
             resModel.setMsg("创建订单缺少必要参数：微信用户id");
-            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            resModel.setCode(ListModel.StatusEnum.FAILURE);
             return resModel;
         }
 
@@ -41,7 +44,7 @@ public class OrderController extends BaseController {
         if (!exists) {
             ListModel resModel = new ListModel();
             resModel.setMsg("不存在此用户");
-            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            resModel.setCode(ListModel.StatusEnum.FAILURE);
             return resModel;
         }
 
@@ -50,13 +53,13 @@ public class OrderController extends BaseController {
         if (orders == null) {
             ListModel resModel = new ListModel();
             resModel.setMsg("当前用户未曾下单");
-            resModel.setCode(ResModel.StatusEnum.FAILURE);
+            resModel.setCode(ListModel.StatusEnum.FAILURE);
             return resModel;
         }
 
         ListModel model = new ListModel();
         model.setData(orders);
-        model.setCode(ResModel.StatusEnum.SUCCESS);
+        model.setCode(ListModel.StatusEnum.SUCCESS);
         model.setTotal(orders.size());
         return model;
     }
