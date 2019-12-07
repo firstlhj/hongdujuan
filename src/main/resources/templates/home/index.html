@@ -6,77 +6,102 @@
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
 </head>
-<body>
-<header>
-    <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/img1.gif" alt="">
-</header>
-<!--<div class="details">-->
-<!--    <div class="details-title">-->
-<!--        <img src="/wxpay/img/maofen.png" alt="">-->
-<!--    </div>-->
-<!--    <div class="personal">-->
-<!--        <div class="personal-text">-->
-<!--            <p>有人把他当救星</p>-->
-<!--            <div class="personal-box"></div>-->
-<!--            <p style="font-size: .30rem">因为他带领中国人民走向光明;</p>-->
-<!--        </div>-->
-<!--        <div class="personal-text" style="margin-top:.45rem">-->
-<!--            <p>有人把他当偶像</p>-->
-<!--            <div class="personal-box"></div>-->
-<!--            <p style="font-size: .30rem">因为他数次力挽狂澜创立宏图伟业;</p>-->
-<!--        </div>-->
-<!--        <div class="personal-text" style="margin-top:.45rem">-->
-<!--            <p>有人把他当导师</p>-->
-<!--            <div class="personal-box"></div>-->
-<!--            <p style="font-size: .30rem">因为他辍笔耕耘累计几千万的鸿篇巨著。</p>-->
-<!--        </div>-->
-<!--        <div class="personal-title">-->
-<!--            <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/timg.gif" alt="">-->
-<!--        </div>-->
-<!--        <div style="text-align: center; ">-->
-<!--            <p style="margin: .2rem 0; font-size: .4rem;">他,就是我们伟大的领袖毛主席</p>-->
-<!--            <p style="font-size: .4rem;">感恩伟人,缅怀伟人,我为主席献花</p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="details-title" style="padding-top:1.2rem">-->
-<!--        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/huodong.png" alt="">-->
-<!--    </div>-->
-<!--    <div class="inherited-text">-->
-<!--        <p style="font-size: .34rem;text-indent:38px;">-->
-<!--            为了认真贯彻习总书记“把红色基因传承好”的重要讲话精神，积极响应韶山市委、市政府提出的“把韶山打造成中国红色文化旅游融合发展示范区”的号召，韶山市红色研究会联合社会各界，发起“我为毛主席家乡种棵红杜鹃”红色公益活动倡议，让红色绽放起来，为中华民族的伟大复兴注入强大的精神动力。</p>-->
-<!--    </div>-->
-<!--    <div class="details-title" style="padding-top:1.2rem">-->
-<!--        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/guiz.png" alt="">-->
-<!--    </div>-->
-<!--    <div class="inherited-text">-->
-<!--        <p style="font-size: .34rem;">1.个人捐种1棵起，100元/棵;</p>-->
-<!--        <p style="font-size: .34rem;">2.认种100棵（含）以上者，栽种红杜鹃树，并进入个人红杜鹃园区。</p>-->
-<!--    </div>-->
-<!--</div>-->
-<div class="levitate box-6">
 
-    <div th:switch="${showMyTree}">
-        <div th:case="true">
-            <div class="box-3">
-                <p style="font-size: .6rem;" class="confirmOrder">继续认种</p>
+<body>
+    <header>
+        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/img1.gif" alt="">
+    </header>
+    <div class="details">
+            <div class="personal-title">
+                    <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/timg.gif" alt="">
             </div>
-            <div class="box-4">
-                <a href='/wxpay/product/index'>
-                    <p style="font-size: .6rem;" id="myOrder">我已认种</p>
-                </a>
+             <div style="width: 74%; margin: 0 auto;">
+                 <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/zhutu.png" alt="">
+             </div>
+        <!-- <div class="details-title">
+            <img src="./img/maofen.png" alt="">
+        </div> -->
+        <!-- <div class="personal">
+            <div class="personal-text">
+                    <p>有人把他当救星</p>
+                    <div class="personal-box"></div>
+                    <p>因为他带领中国人民走向光明;</p>
+            </div>
+            <div class="personal-text" style="margin-top:.45rem">
+                    <p>有人把他当偶像</p>
+                    <div class="personal-box" ></div>
+                    <p>因为他数次力挽狂澜创立宏图伟业;</p>
+            </div>
+            <div class="personal-text"  style="margin-top:.45rem">
+                    <p >有人把他当导师</p>
+                    <div class="personal-box"></div>
+                    <p>因为他辍笔耕耘累计几千万的鸿篇巨著。</p>
+            </div>
+            
+            <div style="text-align: center; ">
+                <p style="margin: .2rem 0; font-size: .4rem;">他,就是我们伟大的领袖毛主席</p>
+                <p style="font-size: .4rem;">感恩伟人,缅怀伟人,我为主席献花</p>
             </div>
         </div>
-            
-        <div th:case="false">
-            <div class="box-3">
-                <p style="font-size: .6rem;" class="confirmOrder">我要认种</p>
+        <div class="details-title" style="padding-top:1.2rem">
+                <img src="./img/huodong.png" alt="">
+        </div>
+        <div class="inherited-text">
+            <p style="font-size: .34rem;text-indent:38px;">为了认真贯彻习总书记“把红色基因传承好”的重要讲话精神，积极响应韶山市委、市政府提出的“把韶山打造成中国红色文化旅游融合发展示范区”的号召，韶山市红色研究会联合社会各界，发起“我为毛主席家乡种棵红杜鹃”红色公益活动倡议，让红色绽放起来，为中华民族的伟大复兴注入强大的精神动力。</p>
+        </div>
+        <div class="details-title" style="padding-top:1.2rem">
+                <img src="./img/guiz.png" alt="">
+        </div>
+        <div class="inherited-text">
+                <p style="font-size: .34rem;">1.个人捐种1棵起，100元/棵;</p>
+                <p style="font-size: .34rem;">2.认种100棵（含）以上者，栽种红杜鹃树，并进入个人红杜鹃园区。</p>
+            </div> -->
+    </div>
+    <div class="levitate box-6">
+
+        <div th:switch="${showMyTree}">
+            <div th:case="true">
+                <div class="box-3">
+                    <p style="font-size: .6rem;" class="confirmOrder">继续认种</p>
+                </div>
+                <div class="box-4">
+                    <a href='/wxpay/product/index'>
+                        <p style="font-size: .6rem;" id="myOrder">我已认种</p>
+                    </a>
+                </div>
+            </div>
+                
+            <div th:case="false">
+                <div class="box-3">
+                    <p style="font-size: .6rem;" class="confirmOrder">我要认种</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<footer class="footer">
-    <p style="color: #333;font-size: .4rem;">小黑物联科技提供技术支持</p>
-</footer>
+    <!-- <div class="popup">
+        <div class="popup-box">
+            <div class="popup-title">
+                <p>请选择认种数量(棵)</p>
+            </div>
+            <div class="select">
+                <a id="num-jian" href="javascript:" class="btn btn_minus" role="button" title="减少"></a>
+                <input class="inputNum" value="1" size="1">
+                <a id="num-jia" href="javascript:" class="btn btn_plus" role="button" title="增加"></a>
+            </div>
+            <div class="confirm-box">
+                <div class="whether" id="cancel">
+                    <p style="color: #333;padding: .2rem 0;">取消</p>
+                </div>
+                <div class="whether" style="margin-left: 2%;">
+                    <p style="color: #333;padding: .2rem 0;">确认</p>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <footer class="footer">
+        <p style="color: #333;font-size: .4rem;">小黑物联科技提供技术支持</p>
+    </footer>
+
 </body>
 
 </html>
@@ -121,6 +146,25 @@
     }
     let throttleScroll = throttle(onTop, 500)
     window.addEventListener("scroll", throttleScroll);
+
+    // let num_jia = document.getElementById('num-jia');
+    // let num_jian = document.getElementById('num-jian');
+    // let cancel = document.getElementById('cancel');
+    // let input_num = document.querySelector('.inputNum');     
+    // let popup=document.querySelector('.popup');    
+    // num_jia.onclick = function () {
+    //     input_num.value = parseInt(input_num.value) + 1;
+    // }
+    // num_jian.onclick = function () {
+    //     if (input_num.value <= 0) {
+    //         input_num.value = 0;
+    //     } else {
+    //         input_num.value = parseInt(input_num.value) - 1;
+    //     }   
+    // }
+    // cancel.onclick=function(){
+    //     popup.style.display='none'; 
+    // }
 
     $(function () {
         showLoad();

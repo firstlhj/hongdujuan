@@ -1,97 +1,123 @@
-body,
-div,
-p {
-    margin: 0;
-    padding: 0;
-}
+                    body,
+                    div,
+                    p {
+                        margin: 0;
+                        padding: 0;
+                    }
 
-body {
-    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
-    height: 100vh;
-    background-size: 100%;
-    background-color: #e52a2f;
-}
+                    body {
+                        background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
+                        height: 100vh;
+                        background-size: 100%;
+                        background-color: #e52a2f;
+                    }
 
-img {
-    width: 100%;
-    display: block;
-}
-a{
-    text-decoration:none;
-    color: #fff;
-}
-.whact-img {
-    width: 16%;
-    border: 2px solid red;
-    border-radius: 50%;
-    margin: 0 auto;
-    margin-top: 1rem;
-}
+                    img {
+                        width: 100%;
+                        display: block;
+                    }
+                    a{
+                        text-decoration:none;
+                        color: #fff;
+                    }
+                    .whact-img {
+                        width: 16%;
+                        border: 2px solid red;
+                        border-radius: 50%;
+                        margin: 0 auto;
+                        margin-top: 1rem;
+                    }
 
-.whact-name {
-    width: 50%;
-    margin: 0 auto;
-    padding: .05rem .2rem;
-    text-align: center;
-    border-radius: 12px;
-    color: red;
-    margin-top: .26rem;
-    font-size: .38rem;
-    letter-spacing: .05rem;
-    /*background-image: linear-gradient(to right, #fc474d, #d02425 );*/
-}
+                    .whact-name {
+                        width: 20%;
+                        margin: 0 auto;
+                        padding: .05rem .2rem;
+                        text-align: center;
+                        border-radius: 12px;
+                        color: red  ;
+                        margin-top: .26rem;
+                        font-size: .38rem;
+                        letter-spacing: .05rem;
+                    }
 
-.center {
-    text-align: center;
-}
+                    .center {
+                        text-align: center;
+                    }
 
-.tree {
-    width: 100vw;
-    margin-top: 4rem;
-}
+                    .tree {
+                        width: 100vw;
+                        margin-top: 4rem;
+                    }
 
-.tree-number {
-    width: 100vw;
-    margin-top: .36rem;
-}
+                    .tree-number {
+                        width: 100vw;
+                        margin-top: .36rem;
+                    }
 
-.tree-number .tree-my {
-    width: 40%;
-    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/numberBg.png');
-    background-size: 100%;
-    margin: 0 auto;
-    /* text-align: center; */
-    height: 36px;
-    color: #fff;
-    line-height: 36px;
-    font-size: .38rem;
-    letter-spacing: .03rem;
-}
+                    .tree-number .tree-my {
+                        width: 40%;
+                        background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/numberBg.png');
+                        background-size: 100%;
+                        margin: 0 auto;
+                        height: 40px;
+                        color: #fff;
+                        line-height: 40px;
+                        font-size: .38rem;
+                        letter-spacing: .03rem;
+                    }
 
-.content-title {
-    font-size: .36rem;
-    margin-top: .3rem;
-    color: #fff;
-    letter-spacing: .03rem;
-}
-.cert{
-    width:2.6rem;
-    height: 0.8rem;
-    background-color: red;
-    margin: 0 auto;
-    border-radius: 30px;
-    text-align: center;
-    line-height: 0.8rem;
-    font-size:.4rem;
-    color: #fff;
-    border:1px solid #fff;
-    margin-top: .6rem;
-    letter-spacing: .03rem;
-}
-.footer {
-    text-align: center;
-    font-size: .24rem;
-    padding: 1rem 0;
-    color: #842407;
+                    .content-title {
+                        font-size: .36rem;
+                        margin-top: .3rem;
+                        color: #fff;
+                        letter-spacing: .03rem;
+                    }
+                    .cert{
+                        width:2.6rem;
+                        height: 0.8rem;
+                        background-color: red;
+                        margin: 0 auto;
+                        border-radius: 30px;
+                        text-align: center;
+                        line-height: 0.8rem;
+                        font-size:.4rem;
+                        color: #fff;
+                        border:1px solid #fff;
+                        margin-top: .6rem;
+                        letter-spacing: .03rem;
+                    }
+                    .footer {
+                        text-align: center;
+                        font-size: .24rem;
+                        padding: 1rem 0;
+                        color: #842407;
 
-}
+                    }
+                    .popup{
+                        width:6rem; 
+                        background-color: #ffffff; 
+                        position: fixed; 
+                        top: 33%;
+                        left: 18%;
+                        display: none;
+                    }
+                    .popup .detail{
+                        font-size: .18rem;
+                        height: .7rem;
+                        border-bottom: 1px solid #ccc;
+                        line-height: .7rem;
+                        padding-top: .4rem;
+                        font-size: .34rem;
+                        display: flex; 
+                        justify-content:center;
+                    }
+                    .popup .down{
+                        width:30%;
+                        margin: .3rem auto; 
+                        font-size: .34rem;
+                        text-align: center;
+                        padding: .2rem;
+                        background-color: red;
+                        border-radius: 20px;
+                        color: #fff;
+                    }

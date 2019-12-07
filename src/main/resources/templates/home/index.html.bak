@@ -7,29 +7,81 @@
     <div th:replace="shared/layout_header"></div>
 </head>
 <body>
-<div class="content">
-    <header>
-        <img src="/wxpay/img/img1.gif" alt="">
-    </header>
-    <div class="box-1"></div>
-    <div class="box-2 box-6">
-        <div class="box-3">
-            <p id="confirmOrder">我要认种</p>
+<header>
+    <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/img1.gif" alt="">
+</header>
+<!--<div class="details">-->
+<!--    <div class="details-title">-->
+<!--        <img src="/wxpay/img/maofen.png" alt="">-->
+<!--    </div>-->
+<!--    <div class="personal">-->
+<!--        <div class="personal-text">-->
+<!--            <p>有人把他当救星</p>-->
+<!--            <div class="personal-box"></div>-->
+<!--            <p style="font-size: .30rem">因为他带领中国人民走向光明;</p>-->
+<!--        </div>-->
+<!--        <div class="personal-text" style="margin-top:.45rem">-->
+<!--            <p>有人把他当偶像</p>-->
+<!--            <div class="personal-box"></div>-->
+<!--            <p style="font-size: .30rem">因为他数次力挽狂澜创立宏图伟业;</p>-->
+<!--        </div>-->
+<!--        <div class="personal-text" style="margin-top:.45rem">-->
+<!--            <p>有人把他当导师</p>-->
+<!--            <div class="personal-box"></div>-->
+<!--            <p style="font-size: .30rem">因为他辍笔耕耘累计几千万的鸿篇巨著。</p>-->
+<!--        </div>-->
+<!--        <div class="personal-title">-->
+<!--            <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/timg.gif" alt="">-->
+<!--        </div>-->
+<!--        <div style="text-align: center; ">-->
+<!--            <p style="margin: .2rem 0; font-size: .4rem;">他,就是我们伟大的领袖毛主席</p>-->
+<!--            <p style="font-size: .4rem;">感恩伟人,缅怀伟人,我为主席献花</p>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--    <div class="details-title" style="padding-top:1.2rem">-->
+<!--        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/huodong.png" alt="">-->
+<!--    </div>-->
+<!--    <div class="inherited-text">-->
+<!--        <p style="font-size: .34rem;text-indent:38px;">-->
+<!--            为了认真贯彻习总书记“把红色基因传承好”的重要讲话精神，积极响应韶山市委、市政府提出的“把韶山打造成中国红色文化旅游融合发展示范区”的号召，韶山市红色研究会联合社会各界，发起“我为毛主席家乡种棵红杜鹃”红色公益活动倡议，让红色绽放起来，为中华民族的伟大复兴注入强大的精神动力。</p>-->
+<!--    </div>-->
+<!--    <div class="details-title" style="padding-top:1.2rem">-->
+<!--        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/guiz.png" alt="">-->
+<!--    </div>-->
+<!--    <div class="inherited-text">-->
+<!--        <p style="font-size: .34rem;">1.个人捐种1棵起，100元/棵;</p>-->
+<!--        <p style="font-size: .34rem;">2.认种100棵（含）以上者，栽种红杜鹃树，并进入个人红杜鹃园区。</p>-->
+<!--    </div>-->
+<!--</div>-->
+<div class="levitate box-6">
+
+    <div th:switch="${showMyTree}">
+        <div th:case="true">
+            <div class="box-3">
+                <p style="font-size: .6rem;" class="confirmOrder">继续认种</p>
+            </div>
+            <div class="box-4">
+                <a href='/wxpay/product/index'>
+                    <p style="font-size: .6rem;" id="myOrder">我已认种</p>
+                </a>
+            </div>
         </div>
-        <div class="box-4" th:if="${showMyTree}">
-            <p id="myOrder">我的认种</p>
+            
+        <div th:case="false">
+            <div class="box-3">
+                <p style="font-size: .6rem;" class="confirmOrder">我要认种</p>
+            </div>
         </div>
     </div>
-    <footer class="footer">
-        <p>由小黑物联科技有限公司提供技术支持</p>
-    </footer>
 </div>
+<footer class="footer">
+    <p style="color: #333;font-size: .4rem;">小黑物联科技提供技术支持</p>
+</footer>
 </body>
 
+</html>
 <div th:replace="shared/layout_scripts"></div>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-</html>
-
 <script>
     //节流阀
     const throttle = (fun, delay) => {
@@ -58,17 +110,17 @@
     };
 
     const onTop = e => {
-        let div = document.querySelector('.box-2');
+        let div = document.querySelector('.levitate');
         const osTop = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop;
         if (isIphonex()) {
-            osTop > 900 ? div.classList.remove('box-6') : div.classList.add('box-6');
+            osTop > 620 ? div.classList.remove('box-6') : div.classList.add('box-6');
         } else {
-            osTop > 1041 ? div.classList.remove('box-6') : div.classList.add('box-6');
+            osTop > 720 ? div.classList.remove('box-6') : div.classList.add('box-6');
         }
 
     }
     let throttleScroll = throttle(onTop, 500)
-    window.addEventListener("scroll", throttleScroll)
+    window.addEventListener("scroll", throttleScroll);
 
     $(function () {
         showLoad();
@@ -98,7 +150,7 @@
             });
         });
 
-        wx.error(function(res){
+        wx.error(function (res) {
             layer.msg("微信分享接口初始化失败");
         });
 
@@ -129,7 +181,7 @@
         });
 
         // 下单按钮
-        $("#confirmOrder").click(function () {
+        $(".confirmOrder").click(function () {
             var orderData = {
                 productCode: "001"
             };
@@ -148,15 +200,15 @@
                         layer.alert(res.msg, {icon: 2});
                     }
                 },
-                error: function(res) {
+                error: function (res) {
                     layer.alert(JSON.stringify(res), {icon: 2});
                     console.log(res);
                 }
             });
         });
 
-        $("#myOrder").click(function () {
-            location.href = "/wxpay/product/index";
-        });
+        // $("#myOrder").click(function () {
+        //     location.href = "";
+        // });
     })
 </script>
