@@ -51,7 +51,7 @@ public class PayController extends BaseController {
             return homeView;
         }
 
-        Order order = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+        Order order = orderService.findByWechatOpenIdWithCreated(openId);
         if (order == null) {
             // 不存在待支付订单
             return homeView;
@@ -71,7 +71,7 @@ public class PayController extends BaseController {
             String ipAddress = getClientIp();
 
             // 获取用户当前未支付订单
-            Order order = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+            Order order = orderService.findByWechatOpenIdWithCreated(openId);
             if (order == null) {
                 return fail("当前用户不存在未支付订单");
             }
@@ -141,7 +141,7 @@ public class PayController extends BaseController {
 
             // 查询商户订单
             String openId = result.get("openid");
-            Order order = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+            Order order = orderService.findByWechatOpenIdWithCreated(openId);
 
             if (order == null) {
                 returnData.put("return_code", "SUCCESS");

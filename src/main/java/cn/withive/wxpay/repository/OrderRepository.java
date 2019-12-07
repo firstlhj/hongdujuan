@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface OrderRepository extends JpaRepository<Order, String> {
 
-    Order findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status);
+//    Order findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status);
 
     Order findByCode(String code);
 

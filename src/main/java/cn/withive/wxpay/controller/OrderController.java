@@ -5,6 +5,7 @@ import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.Product;
 import cn.withive.wxpay.model.OrderModel;
 import cn.withive.wxpay.model.ResModel;
+import cn.withive.wxpay.model.ListModel;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.ProductService;
 import cn.withive.wxpay.util.RandomUtil;
@@ -26,6 +27,32 @@ public class OrderController extends BaseController {
     @Autowired
     private ProductService productService;
 
+    @PostMapping("/list")
+    @ResponseBody
+    public ListModel list(@CookieValue(value = "openId", required = false) String openId) {
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            return fail("创建订单缺少必要参数：微信用户id");
+        }
+
+        boolean exists = wechatUserService.existsByOpenId(openId);
+        if (!exists) {
+            // 不存在此用户
+            return fail("不存在此用户");
+        }
+
+        List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+
+        if (orders == null) {
+            return fail("当前用户未曾下单");
+        }
+
+        ListModel model = new ListModel();
+        model.setData(orders);
+        model.setCode(ResModel.StatusEnum.SUCCESS);
+        model.setTotal(orders.size());
+        return model;
+    }
+
     @PostMapping("/create")
     @ResponseBody
     public ResModel create(@CookieValue(value = "openId", required = false) String openId,
@@ -41,7 +68,7 @@ public class OrderController extends BaseController {
         // 对同一个openId进行加锁
         synchronized(openId) {
             // 判断用户是否存在未支付订单
-            Order order = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+            Order order = orderService.findByWechatOpenIdWithCreated(openId);
 
             if (order != null) {
                 // 有订单，判断是否超时

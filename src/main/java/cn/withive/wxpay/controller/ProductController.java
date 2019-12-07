@@ -54,7 +54,7 @@ public class ProductController extends BaseController {
             return homeView;
         }
 
-        Order order = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+        Order order = orderService.findByWechatOpenIdWithCreated(openId);
         if (order == null) {
             // 不存在状态为未支付的订单
             boolean isExist = orderService.existsByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);

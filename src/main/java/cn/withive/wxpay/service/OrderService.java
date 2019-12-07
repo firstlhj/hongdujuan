@@ -148,14 +148,17 @@ public class OrderService {
     }
 
     public @Nullable
-    Order findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status) {
+    Order findByWechatOpenIdWithCreated(String openId) {
         HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
         String str = hashOperations.get(CacheKeyConst.order_list_key, openId);
 
         Order result = null;
         if (StringUtils.isEmpty(str)) {
             // 缓存中不存在，去数据库中查
-            result = orderRepository.findByWechatOpenIdAndStatus(openId, status);
+            List<Order> orders = orderRepository.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Created);
+            if (orders != null) {
+                result = orders.get(0);
+            }
         } else {
             // 缓存中存在，反序列化
             Order entity = JSON.parseObject(str, Order.class);
@@ -166,6 +169,26 @@ public class OrderService {
 
         return result;
     }
+
+//    public @Nullable
+//    Order findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status) {
+//        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
+//        String str = hashOperations.get(CacheKeyConst.order_list_key, openId);
+//
+//        Order result = null;
+//        if (StringUtils.isEmpty(str)) {
+//            // 缓存中不存在，去数据库中查
+//            result = orderRepository.findByWechatOpenIdAndStatus(openId, status);
+//        } else {
+//            // 缓存中存在，反序列化
+//            Order entity = JSON.parseObject(str, Order.class);
+//            if (entity.getStatus() == status) {
+//                result = entity;
+//            }
+//        }
+//
+//        return result;
+//    }
 
     /**
      * 创建订单
