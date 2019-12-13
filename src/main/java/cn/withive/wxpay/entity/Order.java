@@ -1,22 +1,25 @@
 package cn.withive.wxpay.entity;
 
 import cn.withive.wxpay.constant.OrderStatusEnum;
+import cn.withive.wxpay.constant.OrderTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "`Order`")
+@Table(name = "`Order`", uniqueConstraints = {@UniqueConstraint(columnNames="code")})
 public class Order extends BaseEntity {
 
     @Getter
     @Setter
+    @Column(length = 32)
     private String code;
 
     @Getter
@@ -35,6 +38,24 @@ public class Order extends BaseEntity {
     @Getter
     @Setter
     private BigDecimal amount;
+
+    @Getter
+    @Setter
+    private Integer quantity;
+
+    @Getter
+    @Setter
+    private OrderTypeEnum type;
+
+    @Getter
+    @Setter
+    @Column(length = 50)
+    private String name;
+
+    @Getter
+    @Setter
+    @Column(length = 50)
+    private String phone;
 
     @Getter
     @Setter

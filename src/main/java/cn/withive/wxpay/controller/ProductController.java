@@ -1,6 +1,7 @@
 package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.constant.OrderStatusEnum;
+import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.constant.RedirectViewEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.WechatUser;
@@ -10,6 +11,7 @@ import cn.withive.wxpay.service.WechatUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
@@ -36,9 +38,9 @@ public class ProductController extends BaseController {
      * @param openId
      * @return
      */
-    @RequestMapping({"", "/index"})
-    public ModelAndView index(@CookieValue(value = "openId", required = false) String openId) {
-
+    @RequestMapping({"/{orderCode}", ""})
+    public ModelAndView index(@CookieValue(value = "openId", required = false) String openId,
+                              @PathVariable(value = "orderCode", required = false) String orderCode) {
         ModelAndView productView = new ModelAndView("product/index");
         ModelAndView homeView = new ModelAndView("redirect:/home");
 
@@ -50,64 +52,29 @@ public class ProductController extends BaseController {
             return homeView;
         }
 
-        boolean exists = wechatUserService.existsByOpenId(openId);
-        if (!exists) {
-            // 不存在此用户
-            return homeView;
-        }
-
-        Order order = orderService.findByWechatOpenIdWithCreated(openId);
-        if (order == null) {
-            // 不存在状态为未支付的订单
-            boolean isExist = orderService.existsByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-
-            if (isExist) {
-                // 当前用户曾经支付过订单
-                Long rank = orderService.getRank(openId);
-                WechatUser wechatUser = wechatUserService.findByOpenId(openId);
-                model.setRank(rank);
-                model.setAvatar(wechatUser.getAvatar());
-                model.setNickname(wechatUser.getNickname());
-                productView.addObject("model", model);
-
-                List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-                productView.addObject("orders", orders);
-                return productView;
-            } else {
-                // 当前用户没有下过单
+        if (StringUtils.isEmptyOrWhitespace(orderCode)) {
+            // 没有订单编号，那么检查用户是否曾经付过订单
+            boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
+            if (!isExist) {
+                // 当前用户从未付过单
                 return homeView;
             }
-        }
-
-        // 存在状态为未支付的订单
-        boolean isPaid = orderService.checkPaidWithCode(order.getCode());
-        if (!isPaid) {
-            // 未付款
-            orderService.checkOvertime(order);
-
-            boolean isExist = orderService.existsByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-
-            if (isExist) {
-                // 当前用户曾经支付过订单
-                Long rank = orderService.getRank(openId);
-                WechatUser wechatUser = wechatUserService.findByOpenId(openId);
-                model.setRank(rank);
-                model.setAvatar(wechatUser.getAvatar());
-                model.setNickname(wechatUser.getNickname());
-                productView.addObject("model", model);
-
-                List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-                productView.addObject("orders", orders);
-                return productView;
-            } else {
-                // 当前用户没有下过单
+        } else {
+            // 有订单编号
+            Order order = orderService.findByWechatOpenIdAndCode(openId, orderCode);
+            if (order == null) {
+                // 这个订单不是你的
                 return homeView;
             }
-        }
 
-        // 订单已完成支付
-        // 修改订单状态为已支付
-        boolean result = orderService.markToPaid(order);
+            boolean isPaid = orderService.checkPaidWithCode(order.getCode());
+            if (!isPaid) {
+                // 这个订单没付钱
+                return homeView;
+            }
+
+            orderService.markToPaid(order);
+        }
 
         // 获取用户头像
         WechatUser wechatUser = wechatUserService.findByOpenId(openId);
@@ -116,8 +83,12 @@ public class ProductController extends BaseController {
         model.setNickname(wechatUser.getNickname());
         productView.addObject("model", model);
 
-        List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-        productView.addObject("orders", orders);
+        // 用户已支付订单
+//        List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+//        productView.addObject("orders", orders);
+
+        Long count = wechatUserService.getOrderCount(openId);
+        productView.addObject("orderCount", count);
 
         return productView;
     }

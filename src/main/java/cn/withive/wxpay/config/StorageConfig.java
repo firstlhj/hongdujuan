@@ -1,6 +1,7 @@
 package cn.withive.wxpay.config;
 
 import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.constant.StorageStrategyEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +21,16 @@ public class StorageConfig {
     public StorageConfig(StringRedisTemplate stringRedisTemplate) {
         this.stringRedisTemplate = stringRedisTemplate;
 
-        Boolean hasKey = stringRedisTemplate.hasKey(CacheKeyConst.storage_strategy_key);
+        Boolean hasKey = stringRedisTemplate.hasKey(CacheKeyConstEnum.config_storage_key.getKey());
         if (!hasKey) {
-            setStrategy(StorageStrategyEnum.database);
+            setStrategy(StorageStrategyEnum.redis);
         }
     }
 
     public void setStrategy (StorageStrategyEnum storageStrategy) {
         // 使用枚举名存储
         stringRedisTemplate.opsForValue()
-                .set(CacheKeyConst.storage_strategy_key, storageStrategy.name());
+                .set(CacheKeyConstEnum.config_storage_key.getKey(), storageStrategy.name());
     }
 
     /**
@@ -39,10 +40,10 @@ public class StorageConfig {
      * @return 不存在此配置时将默认返回 database 策略
      */
     public @NonNull StorageStrategyEnum getStrategy() {
-        String str = stringRedisTemplate.opsForValue().get(CacheKeyConst.storage_strategy_key);
+        String str = stringRedisTemplate.opsForValue().get(CacheKeyConstEnum.config_storage_key.getKey());
 
         if (StringUtils.isEmpty(str)) {
-            setStrategy(StorageStrategyEnum.database);
+            setStrategy(StorageStrategyEnum.redis);
         }
 
         try {

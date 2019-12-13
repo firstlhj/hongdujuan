@@ -18,7 +18,7 @@ public class ListModel {
     
     @Getter
     @Setter
-    private int total; 
+    private Long total;
 
     @Getter
     @Setter

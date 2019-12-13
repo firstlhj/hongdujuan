@@ -9,16 +9,22 @@
 </body>
 
 <div th:replace="shared/layout_scripts"></div>
-<script>
+<script th:inline="javascript">
     $(function () {
         showLoad();
 
-        let jsApiPay;
+        let isPaid = false;
 
         function onBridgeReady() {
+            if (isPaid) {
+                location.href = "/home/index";
+            }
+
+            const jsApiPay = JSON.parse([[${payParams}]]);
+
             if (!jsApiPay) {
-                layer.alert("获取支付参数异常", {icon: 1}, function(index) {
-                    location.href = "/wxpay/home/index";
+                layer.alert("获取支付参数异常", {icon: 1}, function (index) {
+                    location.href = "/home/index";
                 })
             }
 
@@ -26,8 +32,9 @@
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                     //支付完成
                     layer.msg('支付成功', {icon: 1});
+                    isPaid = true;
 
-                    location.href = "/wxpay/product/index";
+                    location.href = "/product/" + [[${orderCode}]];
                 } else {
                     // 支付取消
                     layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {
@@ -36,7 +43,7 @@
 
                         layer.close(index);
                     }, function (index) {
-                        location.href = "/wxpay/home/index";
+                        location.href = "/home/index";
                     });
 
 
@@ -44,45 +51,16 @@
             });
         }
 
-        const params = {};
-
-        $.ajax({
-            type: "post",
-            dataType: 'json',
-            url: "/wxpay/pay/getJsApiPay",
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify(params),
-            error: function (res) {
-                closeLoad();
-            },
-            success: function (res) {
-                closeLoad();
-
-                if (res.code) {
-                    // 获取支付参数成功，唤起H5支付
-
-                    jsApiPay = res.data;
-
-                    if (typeof WeixinJSBridge == "undefined") {
-                        if (document.addEventListener) {
-                            document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-                        } else if (document.attachEvent) {
-                            document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                            document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-                        }
-                    } else {
-                        onBridgeReady();
-                    }
-
-                } else {
-                    layer.alert(res.msg, {icon: 2}, function (index) {
-                        history.back(-1);
-
-                        layer.close(index);
-                    });
-                }
+        if (typeof WeixinJSBridge == "undefined") {
+            if (document.addEventListener) {
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            } else if (document.attachEvent) {
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
             }
-        });
+        } else {
+            onBridgeReady();
+        }
     })
 </script>
 </html>

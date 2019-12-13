@@ -49,7 +49,7 @@ public class JsApiController extends BaseController {
 
             Map<String, String> config = WXService.getJsApiConfig(ticket, url);
 
-            return ok(config);
+            return success(config);
 
         } catch (Exception ex) {
             ex.printStackTrace();

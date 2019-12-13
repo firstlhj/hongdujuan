@@ -2,45 +2,78 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wxpay/css/treesSuccess.CSS">
+    <link rel="stylesheet" href="/css/treesSuccess.CSS">
     <title>认种中心</title>
     <div th:replace="shared/layout_header"></div>
 </head>
-
 <body>
-    <header>
-        <div class="whact-img">
-            <img style="border-radius: 50%;" th:src="${model.getAvatar()}" alt="">
-        </div>
-        <div class="whact-name">
-            <p th:text="${model.getNickname()}">深情楠楠</p>
-        </div>
-    </header>
-    <div class="center">
-        <div class="tree">
-            <img style="margin-left: 1.6rem;width: 60%;" src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/shu.png" alt="">
-        </div>
-        <div class="tree-number">
-            <div class="tree-my">
-                <p th:text="${model.getRank()}">0</p>
-            </div>
-        </div>
-        <div class="content-title">
-            <p style="text-shadow:2px 2px 2px #a31b1f ">我为主席家乡种棵红杜鹃</p>
-        </div>
-        <div class="cert">
-            <a href="/wxpay/cert/index">我的证书</a>
+<header>
+    <div class="whact-img">
+        <img style="border-radius: 50%;" th:src="${model.getAvatar()}" alt="">
+    </div>
+    <div class="whact-name">
+        <p th:text="${model.getNickname()}">深情楠楠</p>
+    </div>
+</header>
+<div class="center">
+    <div class="tree">
+        <img style="margin-left: 1.6rem;width: 60%;" src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/shu.png"
+             alt="">
+    </div>
+    <div class="tree-number">
+        <div class="tree-my">
+            <p th:text="${model.getRank()}">0</p>
         </div>
     </div>
-    <footer class="footer">
-        <p style="font-size: .4rem;">小黑物联科技提供技术支持</p>
-    </footer>
-   
-</body>
+    <div class="content-title">
+        <p style="text-shadow:2px 2px 2px #a31b1f ">我为主席家乡种棵红杜鹃</p>
+    </div>
+    <div style="display: flex;">
+        <div class="cert">
+            <a href="/cert/index">我的证书</a>
+        </div>
+        <div class="cert">
+            <p id="personal" style="z-index: 9999;">个人明细</p>
+        </div>
+    </div>
+</div>
+<div class="popup">
+    <div class="detail">
+        <span style="width: 27%;">付款时间</span>
+        <span style="width: 30%;">订单金额</span>
+        <span style="width: 26%;">认种棵数</span>
+    </div>
+    <div th:each="order:${orders}">
+        <div class="detail" style="font-size: .28rem">
+            <span style="width: 35%;" th:text="${#temporals.format(order.getPayTime(), 'yyyy-MM-dd')}">
+                11.26
+            </span>
+            <span style="width: 30%;" th:text="${order.getAmount()}">3152</span>
+            <span style="width: 18%;" th:text="${orders.size()}">2345</span>
+        </div>
+    </div>
 
-<div th:replace="shared/layout_scripts"></div>
+    <div class="down">
+        <p>关闭</p>
+    </div>
+</div>
+<footer class="footer">
+    <p style="font-size: .4rem;">小黑物联科技提供技术支持</p>
+</footer>
+</body>
 </html>
+<div th:replace="shared/layout_scripts"></div>
 <script>
+    let personal = document.querySelector('#personal');
+    let popup = document.querySelector('.popup');
+    let down = document.querySelector('.down');
+    personal.onclick = function () {
+        popup.style.display = 'block';
+    }
+    down.onclick = function () {
+        popup.style.display = 'none'
+    }
+
     $(function () {
         showLoad();
 

@@ -7,7 +7,7 @@
     <style>
         @font-face {
             font-family: REGULAR;
-            src: url(https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/SOURCEHANSANSSC-REGULAR.OTF)
+            src: url('./fonts/SOURCEHANSANSSC-REGULAR.OTF')
         }
 
         body,
@@ -16,19 +16,17 @@
         p {
             margin: 0;
             padding: 0;
-            /* color: #333333; */
         }
 
         body {
-            background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/bg.png') no-repeat;
+            background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/bg2.png') no-repeat;
             background-size: 100% 100%;
             background-color: rgb(229, 42, 47);
         }
 
         .center {
             background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/zhengshu.png') no-repeat;
-            background-size: 100% 100%;
-            /* height: 12rem; */
+            background-size: 100% 100%;     
             width: 80%;
             margin: 0 auto;
             margin-top: 1.7rem;
@@ -38,10 +36,9 @@
         }
 
         .center-title {
-            padding: 7.1rem 0 0 1.5rem;
+            padding: 7.5rem 0 0 1.5rem;
             font-size: .18rem;
             font-family: REGULAR;
-            padding: 7.1rem 0 0 1.5rem;
             font-size: .18rem;
         }
 
@@ -94,10 +91,9 @@
                 <p style="font-size: .34rem" th:text="${nickname}">深情楠楠</p>
             </div>
             <div class="centern-num">
-                <p style="text-indent:30px;letter-spacing: .01rem; font-size: .32rem">
-                    感谢您为湖南省慈善总会韶山红杜鹃公司公益基金捐种<span style="color: red;" th:text="${orderCount}+'颗'">0颗</span>
-                    红杜鹃,共同参与红色文化传播,为红色基因代代传承做出贡献。
-                </p>
+                <p style="text-indent:30px;letter-spacing: .01rem;font-size: .32rem;">感谢您为湖南省慈善总会韶山红杜鹃公司公益基金捐种<span
+                        style="color: red; font-size: .32rem;" th:text="${orderCount}+'颗'">0颗</span>红杜鹃,共同参与红色文化传播,
+                    为红色基因代代传承做出贡献。</p>
             </div>
         </div>
         <div class="share-btn">
@@ -105,12 +101,12 @@
         </div>
     </div>
     <div id="guide">
-        <img src="/wxpay/img/weix.png" alt="" id="weix">
+        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/weix.png" alt="" id="weix">
     </div>
 </body>
 
 </html>
-<div th:replace="shared/layout_scripts"></div>
+<template th:replace="shared/layout_scripts"></template>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script>
     let sharebtn=document.querySelector('.share-btn');
@@ -161,7 +157,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/wxpay/jspai/getConfig",
+            url: "/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
@@ -171,17 +167,14 @@
                 closeLoad();
 
                 if (res.code) {
-                    wx.config({
+                    wx.config(Object.assign({
                         debug: false,
                         jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
-                        ...res.data,
-                    });
+                    }, res.data));
                 } else {
                     layer.alert(res.msg, {icon: 2});
                 }
             }
         });
     })
-
-
 </script>

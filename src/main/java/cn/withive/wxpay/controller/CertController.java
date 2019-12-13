@@ -42,46 +42,24 @@ public class CertController extends BaseController {
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证
-            homeView.setViewName("redirect:/home?state=" + RedirectViewEnum.product.name());
-            return homeView;
-        }
-
-        boolean exists = wechatUserService.existsByOpenId(openId);
-        if (!exists) {
-            // 不存在此用户
             return homeView;
         }
 
         WechatUser wechatUser = wechatUserService.findByOpenId(openId);
-        int count = wechatUserService.getOrderCount(openId);
+        if (wechatUser == null) {
+            // 不存在此用户
+            return homeView;
+        }
+
+        Long count = wechatUserService.getOrderCount(openId);
+        if (count < 1) {
+            // 没有种植过
+            return homeView;
+        }
+
         certView.addObject("orderCount", count);
         certView.addObject("nickname", wechatUser.getNickname());
 
         return certView;
-    }
-
-    @GetMapping("/getOrderCount")
-    @ResponseBody
-    public ResModel getJsApiPay(@CookieValue(value = "openId", required = false) String openId) {
-        try {
-            if (StringUtils.isEmptyOrWhitespace(openId)) {
-                return fail("支付缺少必要参数：微信用户参数");
-            }
-
-            boolean exists = wechatUserService.existsByOpenId(openId);
-            if (!exists) {
-                // 不存在此用户
-                return fail("不存在此用户");
-            }
-
-            int count = wechatUserService.getOrderCount(openId);
-
-            return success(count);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            log.error(ex.getMessage());
-
-            return fail(ex.getMessage());
-        }
     }
 }

@@ -39,8 +39,9 @@ public class BaseController {
         return resModel;
     }
 
-    protected ResModel ok(Object data) {
+    protected ResModel success(String msg, Object data) {
         ResModel resModel = new ResModel();
+        resModel.setMsg(msg);
         resModel.setData(data);
         resModel.setCode(ResModel.StatusEnum.SUCCESS);
         return resModel;

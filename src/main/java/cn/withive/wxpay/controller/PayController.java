@@ -1,18 +1,17 @@
 package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.constant.OrderStatusEnum;
+import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.sdk.WXPayUtil;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.WXService;
 import cn.withive.wxpay.service.WechatUserService;
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
@@ -34,79 +33,53 @@ public class PayController extends BaseController {
     @Autowired
     private WechatUserService wechatUserService;
 
-    @RequestMapping({"", "/index"})
-    public ModelAndView index(@CookieValue(value = "openId", required = false) String openId) {
+    @RequestMapping({"/{orderCode}"})
+    public ModelAndView index(@CookieValue(value = "openId", required = false) String openId,
+                              @PathVariable(value = "orderCode") String orderCode) {
         ModelAndView payView = new ModelAndView("pay/index");
         ModelAndView homeView = new ModelAndView("redirect:/home");
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证
-            homeView.setViewName("redirect:/home?state=repay");
             return homeView;
         }
 
-        boolean exists = wechatUserService.existsByOpenId(openId);
-        if (!exists) {
-            // 不存在此用户
-            return homeView;
-        }
-
-        Order order = orderService.findByWechatOpenIdWithCreated(openId);
+        // 获取用户当前未支付订单
+        Order order = orderService.findByWechatOpenIdAndCodeAndStatusIsCreated(openId, orderCode);
         if (order == null) {
-            // 不存在待支付订单
+            // 当前用户不存在未支付订单
             return homeView;
         }
 
-        return payView;
-    }
+        String payParams = orderService.getPayParams(orderCode);
 
-    @PostMapping("/getJsApiPay")
-    @ResponseBody
-    public ResModel getJsApiPay(@CookieValue(value = "openId", required = false) String openId) {
-        try {
-            if (StringUtils.isEmptyOrWhitespace(openId)) {
-                return fail("支付缺少必要参数：微信用户参数");
+        if (StringUtils.isEmpty(payParams)) {
+            // 微信统一下单
+            Map<String, String> result =
+                    WXService.getUnifiedOrderResult(order.getAmount(), order.getCode(), getClientIp(), openId);
+
+            if (result == null || !result.containsKey("prepay_id")) {
+//                return fail("微信统一下单失败");
+                return homeView;
             }
 
-            String ipAddress = getClientIp();
-
-            // 获取用户当前未支付订单
-            Order order = orderService.findByWechatOpenIdWithCreated(openId);
-            if (order == null) {
-                return fail("当前用户不存在未支付订单");
-            }
-
-            String prepayId = orderService.getPrepayId(openId);
-            if (StringUtils.isEmpty(prepayId)) {
-                // 缓存中不存在支付id，那么向微信统一下单获取
-                Map<String, String> result =
-                        WXService.getUnifiedOrderResult(order.getAmount(), order.getCode(), ipAddress, openId);
-
-                if (result != null && result.containsKey("prepay_id")) {
-                    prepayId = result.get("prepay_id");
-
-                    orderService.setPrepayId(openId, prepayId);
-                } else {
-                    return fail("微信统一下单失败");
-                }
-            }
-
+            String prepayId = result.get("prepay_id");
             // 获取H5 支付参数
             Map<String, String> jsApiParameters = WXService.getJsApiPayParameters(prepayId);
-            return success(jsApiParameters);
+            payParams = JSON.toJSONString(jsApiParameters);
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            log.error(ex.getMessage());
-
-            return fail(ex.getMessage());
+            orderService.setPayParamsCache(orderCode, payParams);
         }
+
+        payView.addObject("payParams", payParams);
+        payView.addObject("orderCode", orderCode);
+
+        return payView;
     }
 
     @PostMapping("/payNotify")
     @ResponseBody
     public String payNotify() throws Exception {
-        log.info("微信支付回调");
         Map<String, String> returnData = new HashMap<>();
 
         try {
@@ -132,7 +105,6 @@ public class PayController extends BaseController {
             // 查询微信订单
             String outTradeNo = result.get("out_trade_no");
             boolean isValid = orderService.checkPaidWithCode(outTradeNo);
-
             if (!isValid) {
                 returnData.put("return_code", "FAIL");
                 returnData.put("return_msg", "订单未完成支付");
@@ -141,8 +113,7 @@ public class PayController extends BaseController {
 
             // 查询商户订单
             String openId = result.get("openid");
-            Order order = orderService.findByWechatOpenIdWithCreated(openId);
-
+            Order order = orderService.findByWechatOpenIdAndCode(openId, outTradeNo);
             if (order == null) {
                 returnData.put("return_code", "SUCCESS");
                 returnData.put("return_msg", "OK");

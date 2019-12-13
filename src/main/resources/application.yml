@@ -5,6 +5,14 @@ server:
 project:
   name:
 
+order:
+  create_frequency_value: 20
+  # 单位：秒
+  create_frequency_expire: 1800
+
+  #半小时限制未支付订单为20个
+
+
 spring:
 
   # data source config

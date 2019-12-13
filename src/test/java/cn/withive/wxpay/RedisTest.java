@@ -45,12 +45,6 @@ class RedisTest {
     }
 
     @Test
-    void test4() {
-        Long rank = orderService.getPaidCount();
-        System.out.println(rank);
-    }
-
-    @Test
     void test5() {
         Long rank = orderService.incrPaidCount();
         System.out.println(rank);
@@ -65,31 +59,5 @@ class RedisTest {
     @Test
     void test7() {
         orderService.trySetRank("oKl-L5Q6a552IhMVzr363PO2EULQ", 2L);
-    }
-
-    @Test
-    void test8() {
-        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
-        Map<String, String> userEntries = hashOperations.entries(CacheKeyConst.bak_user_list_key);
-        log.info(JSON.toJSONString(userEntries));
-
-        hashOperations.delete(CacheKeyConst.bak_user_list_key, userEntries.keySet().toArray());
-    }
-
-    @Test
-    void test9() {
-        SetOperations<String, String> setOperations = stringRedisTemplate.opsForSet();
-        setOperations.add(CacheKeyConst.user_paid_set_key, "oXxpqwHdDrBuLmM0e9SU5afT4W6E");
-    }
-
-    @Test
-    void test10() {
-        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
-        String userOrderCount = hashOperations.get(CacheKeyConst.user_order_list_key, "ovE2Av_jBeLfh_XdDzjGlLbHDYk4");
-        Integer count = 0;
-        if (!StringUtils.isEmpty(userOrderCount)) {
-            count = Integer.parseInt(userOrderCount);
-        }
-        hashOperations.put(CacheKeyConst.user_order_list_key, "ovE2Av_jBeLfh_XdDzjGlLbHDYk4", String.valueOf(++count));
     }
 }

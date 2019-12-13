@@ -2,110 +2,116 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wxpay/css/index.css">
+    <link rel="stylesheet" href="/css/index.css">
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
+    <style>
+
+    </style>
 </head>
 
 <body>
-    <header>
-        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/img1.gif" alt="">
-    </header>
-    <div class="details">
-            <div class="personal-title">
-                    <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/timg.gif" alt="">
-            </div>
-             <div style="width: 74%; margin: 0 auto;">
-                 <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/zhutu.png" alt="">
-             </div>
-        <!-- <div class="details-title">
-            <img src="./img/maofen.png" alt="">
-        </div> -->
-        <!-- <div class="personal">
-            <div class="personal-text">
-                    <p>有人把他当救星</p>
-                    <div class="personal-box"></div>
-                    <p>因为他带领中国人民走向光明;</p>
-            </div>
-            <div class="personal-text" style="margin-top:.45rem">
-                    <p>有人把他当偶像</p>
-                    <div class="personal-box" ></div>
-                    <p>因为他数次力挽狂澜创立宏图伟业;</p>
-            </div>
-            <div class="personal-text"  style="margin-top:.45rem">
-                    <p >有人把他当导师</p>
-                    <div class="personal-box"></div>
-                    <p>因为他辍笔耕耘累计几千万的鸿篇巨著。</p>
-            </div>
-            
-            <div style="text-align: center; ">
-                <p style="margin: .2rem 0; font-size: .4rem;">他,就是我们伟大的领袖毛主席</p>
-                <p style="font-size: .4rem;">感恩伟人,缅怀伟人,我为主席献花</p>
-            </div>
-        </div>
-        <div class="details-title" style="padding-top:1.2rem">
-                <img src="./img/huodong.png" alt="">
-        </div>
-        <div class="inherited-text">
-            <p style="font-size: .34rem;text-indent:38px;">为了认真贯彻习总书记“把红色基因传承好”的重要讲话精神，积极响应韶山市委、市政府提出的“把韶山打造成中国红色文化旅游融合发展示范区”的号召，韶山市红色研究会联合社会各界，发起“我为毛主席家乡种棵红杜鹃”红色公益活动倡议，让红色绽放起来，为中华民族的伟大复兴注入强大的精神动力。</p>
-        </div>
-        <div class="details-title" style="padding-top:1.2rem">
-                <img src="./img/guiz.png" alt="">
-        </div>
-        <div class="inherited-text">
-                <p style="font-size: .34rem;">1.个人捐种1棵起，100元/棵;</p>
-                <p style="font-size: .34rem;">2.认种100棵（含）以上者，栽种红杜鹃树，并进入个人红杜鹃园区。</p>
-            </div> -->
+<header>
+    <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/img1.gif" alt="">
+</header>
+<div class="details">
+    <div class="personal-title">
+        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/timg.gif" alt="">
     </div>
-    <div class="levitate box-6">
+    <div style="width: 74%; margin: 0 auto;">
+        <img src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/zhutu.png" alt="">
+    </div>
+    <div class="levitate">
+        <div class="levitate-types" id='personal'>
+            <p>个人认种</p>
+        </div>
+        <div class="levitate-types" id="enterprise">
+            <p>企业认种</p>
+        </div>
+        <div class="levitate-types" id='reptive'>
+            <p>代人认种</p>
+        </div>
+        <div class="levitate-types" id='family'>
+            <p>家庭认种</p>
+        </div>
+    </div>
+    <div class="footer">
+        <p >小黑物联科技提供技术支持</p>
+    <div/>
+</div>
 
-        <div th:switch="${showMyTree}">
-            <div th:case="true">
-                <div class="box-3">
-                    <p style="font-size: .6rem;" class="confirmOrder">继续认种</p>
-                </div>
-                <div class="box-4">
-                    <a href='/wxpay/product/index'>
-                        <p style="font-size: .6rem;" id="myOrder">我已认种</p>
-                    </a>
-                </div>
-            </div>
-                
-            <div th:case="false">
-                <div class="box-3">
-                    <p style="font-size: .6rem;" class="confirmOrder">我要认种</p>
-                </div>
-            </div>
+
+<div th:switch="${showMyTree}">
+    <div th:case="true">
+        <div class="name_cmd">
+            <a href="/product" style="color: #ffdda4;">
+                <p style="height:.6rem">我</p>
+                <p style="height:.6rem">的</p>
+                <p style="height:.6rem">认</p>
+                <p style="height:.6rem">种</p>
+            </a>
         </div>
     </div>
-    <!-- <div class="popup">
+</div>
+
+
+<div class="popup">
+    <form id="mainForm">
+        <div class="popup-title">
+            <p id="description">个人认种</p>
+        </div>
         <div class="popup-box">
-            <div class="popup-title">
-                <p>请选择认种数量(棵)</p>
+            <div class="popup-num">
+                <p>数量</p>
             </div>
-            <div class="select">
-                <a id="num-jian" href="javascript:" class="btn btn_minus" role="button" title="减少"></a>
-                <input class="inputNum" value="1" size="1">
-                <a id="num-jia" href="javascript:" class="btn btn_plus" role="button" title="增加"></a>
-            </div>
-            <div class="confirm-box">
-                <div class="whether" id="cancel">
-                    <p style="color: #333;padding: .2rem 0;">取消</p>
-                </div>
-                <div class="whether" style="margin-left: 2%;">
-                    <p style="color: #333;padding: .2rem 0;">确认</p>
+            <div class="input-group">
+                <div class="select">
+                    <a id="num-jian" href="javascript:" class="btn btn_minus" role="button" title="减少"></a>
+                    <input class="inputNum" type="number" value="1" size="1" id='quantity'>
+                    <a id="num-jia" href="javascript:" class="btn btn_plus" role="button" title="增加"></a>
                 </div>
             </div>
         </div>
-    </div> -->
-    <footer class="footer">
-        <p style="color: #333;font-size: .4rem;">小黑物联科技提供技术支持</p>
-    </footer>
+        <div class="popup-box">
+            <div class="popup-num">
+                <p id="namein">姓名</p>
+            </div>
+            <div class="input-group">
+                <div class="select" style="text-align: center;">
+                    <input class="inputNum" value="" size="1" id="placename" placeholder="请输入姓名">
+                </div>
+            </div>
+        </div>
+        <div class="popup-box" id="input-phone">
+            <div class="popup-num">
+                <p>电话</p>
+            </div>
+            <div class="input-group">
+                <div class="select" style="text-align: center;">
+                    <input class="inputNum" value="" size="1" id="phone" placeholder="请输入电话" type="text">
+                </div>
+            </div>
+        </div>
+
+        <div class="confirm-box">
+            <div class="whether" id="determine">
+                <p style="color: #333;font-size: .46rem;padding: .2rem 0; font-weight: 700;" id="confirmOrder">确认</p>
+            </div>
+        </div>
+        <div class="down">
+            <img src="/img/gbi.png" alt="">
+        </div>
+    </form>
+</div>
+
+<div id='guide'></div>
+
 
 </body>
 
 </html>
-<div th:replace="shared/layout_scripts"></div>
+
+<template th:replace="shared/layout_scripts"></template>
 <script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script>
     //节流阀
@@ -147,27 +153,75 @@
     let throttleScroll = throttle(onTop, 500)
     window.addEventListener("scroll", throttleScroll);
 
-    // let num_jia = document.getElementById('num-jia');
-    // let num_jian = document.getElementById('num-jian');
-    // let cancel = document.getElementById('cancel');
-    // let input_num = document.querySelector('.inputNum');     
-    // let popup=document.querySelector('.popup');    
-    // num_jia.onclick = function () {
-    //     input_num.value = parseInt(input_num.value) + 1;
-    // }
-    // num_jian.onclick = function () {
-    //     if (input_num.value <= 0) {
-    //         input_num.value = 0;
-    //     } else {
-    //         input_num.value = parseInt(input_num.value) - 1;
-    //     }   
-    // }
-    // cancel.onclick=function(){
-    //     popup.style.display='none'; 
-    // }
+    let $quantity = $('#quantity');
+    let $description = $('#description')
+    $('#num-jia').on('click', function () {
+        let quantity = parseInt($quantity.val()) + 1;
+        if (quantity > 100) {
+            layer.msg("种植数量不能超过100", {icon: 0});
+            return;
+        }
+
+        $quantity.val(quantity)
+    })
+    $('#num-jian').on('click', function () {
+        let quantity = parseInt($quantity.val()) - 1;
+        if (quantity <= 0) {
+            return;
+        }
+
+        $quantity.val(quantity)
+    })
+
+    function libmagic() {
+        $('.popup').fadeIn(500);
+        $('#guide').fadeIn(500);
+        $('#namein').text('姓名');
+        $('#placename').attr('placeholder', '请输入姓名');
+        $('#input-phone').css({'opacity': '1'})
+        stopBodyScroll(guide)
+    }
+
+    $('#personal').on('click', function () {
+        $description.text('个人认种')
+        libmagic();
+        orderType = 0;
+    })
+    $('#enterprise').on('click', function () {
+        $description.text('企业认种')
+        $('.popup').fadeIn(500);
+        $('#guide').fadeIn(500);
+        $('#namein').text('公司');
+        $('#placename').attr('placeholder', '请输入公司名');
+        $('#input-phone').css({'opacity': '0'})
+        stopBodyScroll(guide);
+
+        orderType = 1;
+    })
+    $('#reptive').on('click', function () {
+        $description.text('代人认种')
+        libmagic();
+
+        orderType = 2;
+    })
+    $('#family').on('click', function () {
+        $description.text('家庭认种')
+        libmagic();
+
+        orderType = 3;
+    })
+    $('.down').on('click', function () {
+        $('.popup').fadeOut(500);
+        $('#guide').fadeOut(500);
+        // $quantity.val(1);
+        stopBodyScroll();
+
+        document.getElementById("mainForm").reset();
+    });
+
+    var orderType;
 
     $(function () {
-        showLoad();
 
         // 获取当前链接地址，不带参数部分
         const currentUrl = location.origin + location.pathname;
@@ -203,7 +257,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/wxpay/jspai/getConfig",
+            url: "/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
@@ -213,33 +267,68 @@
                 closeLoad();
 
                 if (res.code) {
-                    wx.config({
+                    wx.config(Object.assign({
                         debug: false,
                         jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
-                        ...res.data,
-                    });
+                    }, res.data));
                 } else {
                     layer.alert(res.msg, {icon: 2});
                 }
             }
         });
 
+        // 数量验证
+        $("#quantity").change(function () {
+            let quantity = parseInt(this.value);
+
+            if (quantity > 100) {
+                layer.msg("种植数量不能超过100", {icon: 0});
+                // this.value = 100;
+            } else if (quantity < 1) {
+                layer.msg("种植数量不能小于1", {icon: 0});
+                this.value = 1;
+            }
+        });
+
         // 下单按钮
-        $(".confirmOrder").click(function () {
+        $("#confirmOrder").click(function () {
+            let quantity = $("#quantity").change().val();
+            let name = $("#placename").val();
+            let phone = $("#phone").val();
+
+            if (quantity > 100 || quantity < 1) {
+                // layer.msg("种植数量不正确", {icon: 2});
+                return;
+            }
+            if (!name) {
+                layer.msg("请填写姓名/名称", {icon: 2});
+                return;
+            }
+            if (orderType !== 1 && !phone) {
+                layer.msg("请填写电话号码", {icon: 2});
+                return;
+            }
+
+            showLoad();
+
             var orderData = {
-                productCode: "001"
+                productCode: "001",
+                type: orderType,
+                quantity: quantity,
+                name: name,
+                phone: phone,
             };
 
             $.ajax({
                 type: "post",
                 dataType: 'json',
-                url: "/wxpay/order/create",
+                url: "/order/create",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(orderData),
                 success: function (res) {
                     if (res.code) {
                         // 下单成功跳转支付
-                        location.href = "/wxpay/pay/index";
+                        location.href = `/pay/${res.data}`;
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }
@@ -247,12 +336,11 @@
                 error: function (res) {
                     layer.alert(JSON.stringify(res), {icon: 2});
                     console.log(res);
+                },
+                done: function (res) {
+                    closeLoad();
                 }
             });
         });
-
-        // $("#myOrder").click(function () {
-        //     location.href = "";
-        // });
     })
 </script>

@@ -4,6 +4,7 @@ import cn.withive.wxpay.callback.GetAccessTokenCallback;
 import cn.withive.wxpay.callback.GetUserInfoCallback;
 import cn.withive.wxpay.config.WXPayMchConfig;
 import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.model.WXAccessTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
@@ -44,6 +45,8 @@ public class WXService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    private Long tokenExpire = 5400L;
 
     public WXPayMchConfig getConfig() {
         return config;
@@ -127,11 +130,9 @@ public class WXService {
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             throw new IllegalArgumentException("缺少查询必要参数：openId！");
         }
-
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
 
-        String key = CacheKeyConst.wx_user_token_key + openId;
-        valueOperations.set(key, token);
+        valueOperations.set(CacheKeyConstEnum.token_user_key.getKey(openId), token);
     }
 
     public @Nullable
@@ -158,8 +159,8 @@ public class WXService {
 
         // 缓存access_token，便于以后再获取用户信息
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
-        String key = CacheKeyConst.wx_user_token_key + result.getOpenid();
-        valueOperations.set(key, result.getAccess_token(), result.getExpires_in(), TimeUnit.SECONDS);
+        valueOperations.set(CacheKeyConstEnum.token_user_key.getKey(result.getOpenid()), result.getAccess_token(),
+                result.getExpires_in(), TimeUnit.SECONDS);
 
         // TODO: 缓存住refresh_token
 
@@ -173,8 +174,7 @@ public class WXService {
 
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
 
-        String key = CacheKeyConst.wx_user_token_key + openId;
-        String token = valueOperations.get(key);
+        String token = valueOperations.get(CacheKeyConstEnum.token_user_key.getKey(openId));
 
         if (StringUtils.isEmpty(token)) {
             // TODO: 刷新获取token
@@ -232,7 +232,8 @@ public class WXService {
         });
     }
 
-    public @Nullable WXUserInfoModel getUserInfo(@NonNull String accessToken, @NonNull String openId) {
+    public @Nullable
+    WXUserInfoModel getUserInfo(@NonNull String accessToken, @NonNull String openId) {
         if (StringUtils.isEmptyOrWhitespace(accessToken)) {
             throw new IllegalArgumentException("缺少必要参数：accessToken！");
         }
@@ -369,7 +370,7 @@ public class WXService {
     public @Nullable
     String getGlobalToken() {
 
-        String accessToken = stringRedisTemplate.opsForValue().get(CacheKeyConst.wx_global_token_key);
+        String accessToken = stringRedisTemplate.opsForValue().get(CacheKeyConstEnum.token_global_key.getKey());
 
         if (!StringUtils.isEmpty(accessToken)) {
             return accessToken;
@@ -391,7 +392,7 @@ public class WXService {
 
             accessToken = (String) resultObj.getData();
 
-            stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_global_token_key, accessToken, 7200,
+            stringRedisTemplate.opsForValue().set(CacheKeyConstEnum.token_global_key.getKey(), accessToken, tokenExpire,
                     TimeUnit.SECONDS);
 
             return accessToken;
@@ -419,7 +420,7 @@ public class WXService {
         accessToken = resultObj.getString("access_token");
         Long expiresIn = resultObj.getLong("expires_in");
 
-        stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_global_token_key, accessToken, expiresIn,
+        stringRedisTemplate.opsForValue().set(CacheKeyConstEnum.token_global_key.getKey(), accessToken, tokenExpire,
                 TimeUnit.SECONDS);
 
         return accessToken;
@@ -432,7 +433,7 @@ public class WXService {
      * @return
      */
     public String getJsApiTicket(String accessToken) {
-        String ticket = stringRedisTemplate.opsForValue().get(CacheKeyConst.wx_ticket_key);
+        String ticket = stringRedisTemplate.opsForValue().get(CacheKeyConstEnum.token_ticket_key.getKey());
 
         if (!StringUtils.isEmpty(ticket)) {
             return ticket;
@@ -456,9 +457,9 @@ public class WXService {
         }
 
         ticket = resultObj.getString("ticket");
-        Long expiresIn = resultObj.getLong("expires_in");
 
-        stringRedisTemplate.opsForValue().set(CacheKeyConst.wx_ticket_key, ticket, expiresIn, TimeUnit.SECONDS);
+        stringRedisTemplate.opsForValue().set(CacheKeyConstEnum.token_ticket_key.getKey(), ticket, tokenExpire,
+                TimeUnit.SECONDS);
 
         return ticket;
     }

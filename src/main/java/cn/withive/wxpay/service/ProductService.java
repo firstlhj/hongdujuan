@@ -2,6 +2,7 @@ package cn.withive.wxpay.service;
 
 import cn.withive.wxpay.config.StorageConfig;
 import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.constant.StorageStrategyEnum;
 import cn.withive.wxpay.entity.Product;
@@ -28,12 +29,9 @@ public class ProductService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
-    @Autowired
-    private StorageConfig storageConfig;
-
     public Product findByCode(String code) {
         HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
-        String str = hashOperations.get(CacheKeyConst.product_list_key, code);
+        String str = hashOperations.get(CacheKeyConstEnum.product_list_key.getKey(), code);
 
         if (!StringUtils.isEmpty(str)) {
             Product result = JSON.parseObject(str, Product.class);
@@ -51,18 +49,8 @@ public class ProductService {
             result.setName("小树");
             result.setCode("001");
             result.setAmount(new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP));
-            hashOperations.put(CacheKeyConst.product_list_key, code, JSON.toJSONString(result));
+            hashOperations.put(CacheKeyConstEnum.product_list_key.getKey(), code, JSON.toJSONString(result));
             productRepository.save(result);
-
-//            StorageStrategyEnum storageStrategy = storageConfig.getStrategy();
-//            switch (storageStrategy) {
-//                case database:
-//                    productRepository.save(result);
-//                    break;
-//                case redis:
-//                    hashOperations.put(CacheKeyConst.bak_product_list_key, code, JSON.toJSONString(result));
-//                    break;
-//            }
         }
 
         return result;

@@ -1,7 +1,5 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.callback.GetAccessTokenCallback;
-import cn.withive.wxpay.config.WXPayDomainConfig;
 import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.constant.RedirectViewEnum;
 import cn.withive.wxpay.entity.WechatUser;
@@ -20,8 +18,6 @@ import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.util.Map;
-import java.util.UUID;
 
 import static cn.withive.wxpay.constant.RedirectViewEnum.valueOf;
 
@@ -53,7 +49,6 @@ public class HomeController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId, String code,
                               String state) {
         ModelAndView view = new ModelAndView("home/index");
-        view.addObject("project", projectName);
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             if (StringUtils.isEmptyOrWhitespace(code)) {
@@ -127,7 +122,7 @@ public class HomeController extends BaseController {
             }
         }
 
-        boolean isExist = orderService.existsByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
+        boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
         // 用户曾经下过订单，那么页面上显示我的认种页面
         view.addObject("showMyTree", isExist);
 

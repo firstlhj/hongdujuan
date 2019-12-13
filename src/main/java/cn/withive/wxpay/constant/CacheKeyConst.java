@@ -1,5 +1,6 @@
 package cn.withive.wxpay.constant;
 
+@Deprecated
 public class CacheKeyConst {
 
     /**
@@ -33,14 +34,14 @@ public class CacheKeyConst {
     public static final String user_list_key = "wxpay:wechatUser";
 
     /**
-     * 已支付用户集合 set结构
-     */
-    public static final String user_paid_set_key = "wxpay:wechatUser:paid";
-
-    /**
      * 用户支付订单数量 hash结构
      */
-    public static final String user_order_list_key = "wxpay:wechatUser:orderCount";
+    public static final String user_order_paid_key = "wxpay:wechatUser:order:paid";
+
+    /**
+     * 用户已创建的订单数
+     */
+    public static final String user_order_created_key = "wxpay:wechatUser:order:created:";
 
     /**
      * 微信全局token String结构，数据两小时自动过期

@@ -1,123 +1,185 @@
-                    body,
-                    div,
-                    p {
-                        margin: 0;
-                        padding: 0;
-                    }
+@font-face {
+    font-family: LIG;
+    src: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/DINPro-Light.otf')
+}
 
-                    body {
-                        background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
-                        height: 100vh;
-                        background-size: 100%;
-                        background-color: #e52a2f;
-                    }
+body,
+div,
+p,
+ul {
+    margin: 0;
+    padding: 0;
+}
 
-                    img {
-                        width: 100%;
-                        display: block;
-                    }
-                    a{
-                        text-decoration:none;
-                        color: #fff;
-                    }
-                    .whact-img {
-                        width: 16%;
-                        border: 2px solid red;
-                        border-radius: 50%;
-                        margin: 0 auto;
-                        margin-top: 1rem;
-                    }
+body {
+    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
+    height: 100vh;
+    background-size: 100%;
+    background-color: #e52a2f;
+}
 
-                    .whact-name {
-                        width: 20%;
-                        margin: 0 auto;
-                        padding: .05rem .2rem;
-                        text-align: center;
-                        border-radius: 12px;
-                        color: red  ;
-                        margin-top: .26rem;
-                        font-size: .38rem;
-                        letter-spacing: .05rem;
-                    }
+img {
+    width: 100%;
+    display: block;
+}
 
-                    .center {
-                        text-align: center;
-                    }
+a {
+    text-decoration: none;
+    color: #fff;
+}
 
-                    .tree {
-                        width: 100vw;
-                        margin-top: 4rem;
-                    }
+.whact-img {
+    width: 16%;
+    border: 2px solid red;
+    border-radius: 50%;
+    margin: 0 auto;
+    margin-top: 1rem;
+}
 
-                    .tree-number {
-                        width: 100vw;
-                        margin-top: .36rem;
-                    }
+.whact-name {
+    width: 50%;
+    margin: 0 auto;
+    padding: .05rem .2rem;
+    text-align: center;
+    border-radius: 12px;
+    color: red;
+    margin-top: .26rem;
+    font-size: .38rem;
+    letter-spacing: .05rem;
+}
 
-                    .tree-number .tree-my {
-                        width: 40%;
-                        background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/numberBg.png');
-                        background-size: 100%;
-                        margin: 0 auto;
-                        height: 40px;
-                        color: #fff;
-                        line-height: 40px;
-                        font-size: .38rem;
-                        letter-spacing: .03rem;
-                    }
+.center {
+    text-align: center;
+}
 
-                    .content-title {
-                        font-size: .36rem;
-                        margin-top: .3rem;
-                        color: #fff;
-                        letter-spacing: .03rem;
-                    }
-                    .cert{
-                        width:2.6rem;
-                        height: 0.8rem;
-                        background-color: red;
-                        margin: 0 auto;
-                        border-radius: 30px;
-                        text-align: center;
-                        line-height: 0.8rem;
-                        font-size:.4rem;
-                        color: #fff;
-                        border:1px solid #fff;
-                        margin-top: .6rem;
-                        letter-spacing: .03rem;
-                    }
-                    .footer {
-                        text-align: center;
-                        font-size: .24rem;
-                        padding: 1rem 0;
-                        color: #842407;
+.tree {
+    width: 100vw;
+    margin-top: 4rem;
+}
 
-                    }
-                    .popup{
-                        width:6rem; 
-                        background-color: #ffffff; 
-                        position: fixed; 
-                        top: 33%;
-                        left: 18%;
-                        display: none;
-                    }
-                    .popup .detail{
-                        font-size: .18rem;
-                        height: .7rem;
-                        border-bottom: 1px solid #ccc;
-                        line-height: .7rem;
-                        padding-top: .4rem;
-                        font-size: .34rem;
-                        display: flex; 
-                        justify-content:center;
-                    }
-                    .popup .down{
-                        width:30%;
-                        margin: .3rem auto; 
-                        font-size: .34rem;
-                        text-align: center;
-                        padding: .2rem;
-                        background-color: red;
-                        border-radius: 20px;
-                        color: #fff;
-                    }
+.tree-number {
+    width: 100vw;
+    margin-top: .36rem;
+}
+
+.tree-number .tree-my {
+    width: 40%;
+    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/numberBg.png');
+    background-size: 100%;
+    margin: 0 auto;
+    height: 40px;
+    color: #fff;
+    line-height: 40px;
+    font-size: .38rem;
+    letter-spacing: .03rem;
+}
+
+.content-title {
+    font-size: .36rem;
+    margin-top: .3rem;
+    color: #fff;
+    letter-spacing: .03rem;
+}
+
+.cert {
+    width: 2.6rem;
+    height: 0.8rem;
+    background-color: red;
+    margin: 0 auto;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 0.8rem;
+    font-size: .4rem;
+    color: #fff;
+    border: 1px solid #fff;
+    margin-top: .6rem;
+    letter-spacing: .03rem;
+}
+
+.footer {
+    text-align: center;
+    font-size: .24rem;
+    padding: 1rem 0;
+    color: #842407;
+
+}
+
+.popup {
+    width: 7rem;
+    background-color: rgb(197, 17, 16);
+    border-radius: 10px;
+    position: fixed;
+    top: 33%;
+    left: 14%;
+    display: none;
+    z-index: 9999;
+    color: #fff;
+}
+
+.popup .detail {
+    font-size: .34rem;
+    font-family: LIG;
+    height: .7rem;
+    border-bottom: 1px solid #ccc;
+    line-height: .7rem;
+    padding-top: .76rem;
+    display: flex;
+    justify-content: space-between;
+    margin: .1rem .4rem;
+}
+
+.popup .down {
+    width: .6rem;
+    height: .6rem;
+    line-height: .6rem;
+    position: absolute;
+    top: .08rem;
+    right: .08rem;
+    font-size: .16rem;
+    text-align: center;
+    border-radius: 50%;
+    opacity: .8;
+}
+
+ul {
+    margin: 0 2rem;
+    display: flex;
+    border: 1px solid #fff;
+    border-radius: 20px;
+    align-items: center;
+}
+
+ul li {
+    flex: 1;
+    padding: .04rem 0;
+    text-align: center;
+    list-style-type: none;
+    font-size: .34rem;
+}
+
+ul li a {
+    text-decoration: none;
+    background-color: #fff;
+    font-size: 1px;
+    border-radius: 50%;
+    padding: 0 .1rem;
+    color: red;
+}
+
+ul li a.active {
+    background-color: #eee;
+    color: black;
+    border: 1px solid #ddd;
+}
+
+#guide {
+    position: fixed;
+    left: 0;
+    top: 0;
+    opacity: .6;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    z-index: 999;
+    display: none;
+}

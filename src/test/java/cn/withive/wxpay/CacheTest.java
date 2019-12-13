@@ -1,6 +1,7 @@
 package cn.withive.wxpay;
 
-import cn.withive.wxpay.constant.CacheKeyConst;
+import cn.withive.wxpay.constant.CacheKeyConstEnum;
+import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.Product;
 import cn.withive.wxpay.repository.OrderRepository;
@@ -10,11 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.redis.core.HashOperations;
-import org.thymeleaf.util.StringUtils;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Slf4j
 @SpringBootTest
@@ -52,18 +50,16 @@ public class CacheTest {
     }
 
     @Test
-    void test3() {
-        String prepayId = orderService.getPrepayId("oXxpqwPLBVseGV5BhMxsfpkAbG8Q");
-        log.info(prepayId);
+    void test6() {
+        orderService.setUserCreateOrderCode("oXxpqwHdDrBuLmM0e9SU5afT4W6E", "123");
+        boolean isVerify = orderService.checkUserCreateCount("oXxpqwHdDrBuLmM0e9SU5afT4W6E");
+        System.out.println(isVerify);
+        orderService.resetUserCreateCount("oXxpqwHdDrBuLmM0e9SU5afT4W6E");
     }
 
     @Test
-    void test4() {
-        orderService.setPrepayId("oXxpqwPLBVseGV5BhMxsfpkAbG8Q", "7788");
-    }
-
-    @Test
-    void test5() {
-        orderService.removePrepayId("oXxpqwPLBVseGV5BhMxsfpkAbG8Q");
+    void test7() {
+        String key = CacheKeyConstEnum.order_list_key.getKey(OrderTypeEnum.myself.name());
+        System.out.println(key);
     }
 }
