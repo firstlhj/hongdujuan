@@ -179,7 +179,7 @@
         $('#namein').text('姓名');
         $('#placename').attr('placeholder', '请输入姓名');
         $('#input-phone').css({'opacity': '1'})
-        stopBodyScroll(guide)
+        // stopBodyScroll(guide)
     }
 
     $('#personal').on('click', function () {
@@ -194,7 +194,7 @@
         $('#namein').text('公司');
         $('#placename').attr('placeholder', '请输入公司名');
         $('#input-phone').css({'opacity': '0'})
-        stopBodyScroll(guide);
+        // stopBodyScroll(guide);
 
         orderType = 1;
     })
@@ -214,7 +214,7 @@
         $('.popup').fadeOut(500);
         $('#guide').fadeOut(500);
         // $quantity.val(1);
-        stopBodyScroll();
+        // stopBodyScroll();
 
         document.getElementById("mainForm").reset();
     });
@@ -257,7 +257,7 @@
         $.ajax({
             type: "post",
             dataType: 'json',
-            url: "/jspai/getConfig",
+            url: "/wxpay/jspai/getConfig",
             contentType: "application/json;charset=utf-8",
             data: JSON.stringify(params),
             error: function (res) {
@@ -322,7 +322,7 @@
             $.ajax({
                 type: "post",
                 dataType: 'json',
-                url: "/order/create",
+                url: "/wxpay/order/create",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(orderData),
                 success: function (res) {

@@ -81,17 +81,17 @@
     $('#personal').on('click', function () {
         $('.popup').fadeIn(500);
         $('#guide').fadeIn(500);
-        stopBodyScroll(guide)
+        // stopBodyScroll(guide)
     })
     $('#guide').on('click', function () {
         $('.popup').fadeOut(500);
         $('#guide').fadeOut(500);
-        stopBodyScroll()
+        // stopBodyScroll()
     })
     $('.down').on('click', function () {
         $('.popup').fadeOut(500);
         $('#guide').fadeOut(500);
-        stopBodyScroll()
+        // stopBodyScroll()
     })
     //   guide.onclick=function(){
     //     popup.style.display='none';
@@ -119,7 +119,7 @@
 
     function loadPage(page, size) {
         $.ajax({
-            url: `/order/list?page=${page}&size=${size}`,
+            url: `/wxpay/order/list?page=${page}&size=${size}`,
             method: "GET",
             success: function (res) {
                 if (res.code) {
