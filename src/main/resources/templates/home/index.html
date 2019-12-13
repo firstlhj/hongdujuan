@@ -36,75 +36,76 @@
         </div>
     </div>
     <div class="footer">
-        <p >小黑物联科技提供技术支持</p>
-    <div/>
-</div>
+        <p>小黑物联科技提供技术支持</p>
+        <div/>
+    </div>
 
 
-<div th:switch="${showMyTree}">
-    <div th:case="true">
-        <div class="name_cmd">
-            <a href="/wxpay/product" style="color: #ffdda4;">
-                <p style="height:.6rem">我</p>
-                <p style="height:.6rem">的</p>
-                <p style="height:.6rem">认</p>
-                <p style="height:.6rem">种</p>
-            </a>
+    <div th:switch="${showMyTree}">
+        <div th:case="true">
+            <div class="name_cmd">
+                <a href="/wxpay/product" style="color: #ffdda4;">
+                    <p style="height:.6rem">我</p>
+                    <p style="height:.6rem">的</p>
+                    <p style="height:.6rem">认</p>
+                    <p style="height:.6rem">种</p>
+                </a>
+            </div>
         </div>
     </div>
-</div>
 
 
-<div class="popup">
-    <form id="mainForm">
-        <div class="popup-title">
-            <p id="description">个人认种</p>
-        </div>
-        <div class="popup-box">
-            <div class="popup-num">
-                <p>数量</p>
+    <div class="popup">
+        <form id="mainForm">
+            <div class="popup-title">
+                <p id="description">个人认种</p>
             </div>
-            <div class="input-group">
-                <div class="select">
-                    <a id="num-jian" href="javascript:" class="btn btn_minus" role="button" title="减少"></a>
-                    <input class="inputNum" type="number" value="1" size="1" id='quantity'>
-                    <a id="num-jia" href="javascript:" class="btn btn_plus" role="button" title="增加"></a>
+            <div class="popup-box">
+                <div class="popup-num">
+                    <p>数量</p>
+                </div>
+                <div class="input-group">
+                    <div class="select">
+                        <a id="num-jian" href="javascript:" class="btn btn_minus" role="button" title="减少"></a>
+                        <input class="inputNum" type="number" value="1" size="1" id='quantity'>
+                        <a id="num-jia" href="javascript:" class="btn btn_plus" role="button" title="增加"></a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="popup-box">
-            <div class="popup-num">
-                <p id="namein">姓名</p>
-            </div>
-            <div class="input-group">
-                <div class="select" style="text-align: center;">
-                    <input class="inputNum" value="" size="1" id="placename" placeholder="请输入姓名">
+            <div class="popup-box">
+                <div class="popup-num">
+                    <p id="namein">姓名</p>
+                </div>
+                <div class="input-group">
+                    <div class="select" style="text-align: center;">
+                        <input class="inputNum" value="" size="1" id="placename" placeholder="请输入姓名">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="popup-box" id="input-phone">
-            <div class="popup-num">
-                <p>电话</p>
-            </div>
-            <div class="input-group">
-                <div class="select" style="text-align: center;">
-                    <input class="inputNum" value="" size="1" id="phone" placeholder="请输入电话" type="text">
+            <div class="popup-box" id="input-phone">
+                <div class="popup-num">
+                    <p>电话</p>
+                </div>
+                <div class="input-group">
+                    <div class="select" style="text-align: center;">
+                        <input class="inputNum" value="" size="1" id="phone" placeholder="请输入电话" type="text">
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="confirm-box">
-            <div class="whether" id="determine">
-                <p style="color: #333;font-size: .46rem;padding: .2rem 0; font-weight: 700;" id="confirmOrder">确认</p>
+            <div class="confirm-box">
+                <div class="whether" id="determine">
+                    <p style="color: #333;font-size: .46rem;padding: .2rem 0; font-weight: 700;" id="confirmOrder">
+                        确认</p>
+                </div>
             </div>
-        </div>
-        <div class="down">
-            <img src="/wxpay/img/gbi.png" alt="">
-        </div>
-    </form>
-</div>
+            <div class="down">
+                <img src="/wxpay/img/gbi.png" alt="">
+            </div>
+        </form>
+    </div>
 
-<div id='guide'></div>
+    <div id='guide'></div>
 
 
 </body>
@@ -219,6 +220,10 @@
         document.getElementById("mainForm").reset();
     });
 
+    function checkPhone(phone) {
+        return (/^1[3456789]\d{9}$/.test(phone);
+    }
+
     var orderType;
 
     $(function () {
@@ -290,11 +295,20 @@
             }
         });
 
+        // 数量验证
+        $("#phone").change(function () {
+            let phone = this.value;
+
+            if (phone && !checkPhone(phone)) {
+                layer.msg("请填写正确格式的手机号码", {icon: 0});
+            }
+        });
+
         // 下单按钮
         $("#confirmOrder").click(function () {
             let quantity = $("#quantity").change().val();
             let name = $("#placename").val();
-            let phone = $("#phone").val();
+            let phone = $("#phone").change().val();
 
             if (quantity > 100 || quantity < 1) {
                 // layer.msg("种植数量不正确", {icon: 2});
