@@ -328,7 +328,7 @@
                 success: function (res) {
                     if (res.code) {
                         // 下单成功跳转支付
-                        location.href = `/pay/${res.data}`;
+                        location.href = `/wxpay/pay/${res.data}`;
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }

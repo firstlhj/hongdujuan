@@ -17,14 +17,14 @@
 
         function onBridgeReady() {
             if (isPaid) {
-                location.href = "/home/index";
+                location.href = "/wxpay/home/index";
             }
 
             const jsApiPay = JSON.parse([[${payParams}]]);
 
             if (!jsApiPay) {
                 layer.alert("获取支付参数异常", {icon: 1}, function (index) {
-                    location.href = "/home/index";
+                    location.href = "/wxpay/home/index";
                 })
             }
 
@@ -34,7 +34,7 @@
                     layer.msg('支付成功', {icon: 1});
                     isPaid = true;
 
-                    location.href = "/product/" + [[${orderCode}]];
+                    location.href = "/wxpay/product/" + [[${orderCode}]];
                 } else {
                     // 支付取消
                     layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {
@@ -43,7 +43,7 @@
 
                         layer.close(index);
                     }, function (index) {
-                        location.href = "/home/index";
+                        location.href = "/wxpay/home/index";
                     });
 
 
