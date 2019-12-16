@@ -1,21 +1,13 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.OrderStatusEnum;
-import cn.withive.wxpay.constant.RedirectViewEnum;
-import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.WechatUser;
-import cn.withive.wxpay.model.ResModel;
-import cn.withive.wxpay.model.TreesSuccessModel;
-import cn.withive.wxpay.service.OrderService;
-import cn.withive.wxpay.service.WXService;
 import cn.withive.wxpay.service.WechatUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
-
-import java.util.Map;
 
 /**
  * @author qiu xiaobing

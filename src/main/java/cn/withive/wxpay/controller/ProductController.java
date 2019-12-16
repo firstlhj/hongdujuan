@@ -1,7 +1,5 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.OrderStatusEnum;
-import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.constant.RedirectViewEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.WechatUser;
@@ -15,8 +13,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
-
-import java.util.List;
 
 /**
  * @author qiu xiaobing

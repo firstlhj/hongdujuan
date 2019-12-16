@@ -3,7 +3,6 @@ package cn.withive.wxpay.service;
 import cn.withive.wxpay.callback.GetAccessTokenCallback;
 import cn.withive.wxpay.callback.GetUserInfoCallback;
 import cn.withive.wxpay.config.WXPayMchConfig;
-import cn.withive.wxpay.constant.CacheKeyConst;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.model.WXAccessTokenModel;

@@ -1,10 +1,6 @@
 package cn.withive.wxpay.service;
 
-import cn.withive.wxpay.config.StorageConfig;
-import cn.withive.wxpay.constant.CacheKeyConst;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
-import cn.withive.wxpay.constant.OrderStatusEnum;
-import cn.withive.wxpay.constant.StorageStrategyEnum;
 import cn.withive.wxpay.entity.Product;
 import cn.withive.wxpay.repository.ProductRepository;
 import cn.withive.wxpay.util.RandomUtil;
@@ -18,7 +14,6 @@ import org.thymeleaf.util.StringUtils;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Service
 public class ProductService {

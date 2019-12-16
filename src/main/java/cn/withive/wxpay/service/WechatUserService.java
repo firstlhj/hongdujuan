@@ -1,7 +1,6 @@
 package cn.withive.wxpay.service;
 
 import cn.withive.wxpay.config.StorageConfig;
-import cn.withive.wxpay.constant.CacheKeyConst;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.constant.StorageStrategyEnum;
 import cn.withive.wxpay.entity.WechatUser;
@@ -10,7 +9,6 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 

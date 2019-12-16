@@ -1,9 +1,6 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.OrderStatusEnum;
-import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.entity.Order;
-import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.sdk.WXPayUtil;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.WXService;

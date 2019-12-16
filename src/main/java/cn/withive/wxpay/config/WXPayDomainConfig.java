@@ -2,8 +2,6 @@ package cn.withive.wxpay.config;
 
 import cn.withive.wxpay.sdk.IWXPayDomain;
 import cn.withive.wxpay.sdk.WXPayConfig;
-import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component

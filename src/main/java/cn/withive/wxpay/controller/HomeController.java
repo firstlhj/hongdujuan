@@ -1,6 +1,5 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.constant.RedirectViewEnum;
 import cn.withive.wxpay.entity.WechatUser;
 import cn.withive.wxpay.model.WXAccessTokenModel;
