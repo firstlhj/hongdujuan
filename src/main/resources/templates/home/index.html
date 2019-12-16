@@ -221,7 +221,7 @@
     });
 
     function checkPhone(phone) {
-        return (/^1[3456789]\d{9}$/.test(phone));
+        return phone && (/^1[3456789]\d{9}$/.test(phone));
     }
 
     var orderType;
@@ -284,43 +284,71 @@
 
         // 数量验证
         $("#quantity").change(function () {
-            let quantity = parseInt(this.value);
+            let value = parseInt(this.value);
 
-            if (quantity > 100) {
+            if (value > 100) {
                 layer.msg("种植数量不能超过100", {icon: 0});
                 // this.value = 100;
-            } else if (quantity < 1) {
+                return false;
+            } else if (value < 1) {
                 layer.msg("种植数量不能小于1", {icon: 0});
-                this.value = 1;
+                // this.value = 1;
+                return false;
             }
         });
 
-        // 数量验证
+        // 姓名
+        $("#placename").change(function () {
+            let value = this.value;
+
+            if (!value) {
+                layer.msg("请填写姓名/名称", {icon: 0});
+                return false;
+            }
+
+            if (value.length > 50) {
+                layer.msg("姓名/名称长度不要超过50", {icon: 0});
+                return false;
+            }
+        });
+
+        // 手机验证
         $("#phone").change(function () {
-            let phone = this.value;
+            let value = this.value;
 
-            if (phone && !checkPhone(phone)) {
+            if (orderType !== 1 && !checkPhone(value)) {
                 layer.msg("请填写正确格式的手机号码", {icon: 0});
+                return false;
             }
         });
+
+        let verify = {
+            quantity: function (value) {
+                return value >= 1 && value <= 100;
+            },
+            name: function (value) {
+                return value && value.length <= 50;
+            },
+            phone: function (value) {
+                return orderType === 1 || checkPhone(value);
+            }
+        };
 
         // 下单按钮
         $("#confirmOrder").click(function () {
             let quantity = $("#quantity").change().val();
-            let name = $("#placename").val();
-            let phone = $("#phone").change().val();
+            if (!verify.quantity(quantity)) {
+                return false;
+            }
 
-            if (quantity > 100 || quantity < 1) {
-                // layer.msg("种植数量不正确", {icon: 2});
-                return;
+            let name = $("#placename").change().val();
+            if (!verify.name(name)) {
+                return false;
             }
-            if (!name) {
-                layer.msg("请填写姓名/名称", {icon: 2});
-                return;
-            }
-            if (orderType !== 1 && !phone) {
-                layer.msg("请填写电话号码", {icon: 2});
-                return;
+
+            let phone = $("#phone").change().val();
+            if (!verify.phone(phone)) {
+                return false;
             }
 
             showLoad();
