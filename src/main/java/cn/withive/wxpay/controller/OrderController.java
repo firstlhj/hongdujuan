@@ -73,7 +73,7 @@ public class OrderController extends BaseController {
 
     @PostMapping("/create")
     @ResponseBody
-    public ResModel create(@CookieValue(value = "openId", required = false) String openId,
+    public ResModel create(@CookieValue(value = "openId") String openId,
                            @RequestBody OrderModel model) {
         if (StringUtils.isEmptyOrWhitespace(model.getProductCode())) {
             return fail("缺少创建订单必要参数：商品编号");

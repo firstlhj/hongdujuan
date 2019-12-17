@@ -11,15 +11,7 @@
 <div th:replace="shared/layout_scripts"></div>
 <script th:inline="javascript">
     $(function () {
-        showLoad();
-
-        let isPaid = false;
-
         function onBridgeReady() {
-            if (isPaid) {
-                location.href = "/wxpay/home/index";
-            }
-
             const jsApiPay = JSON.parse([[${payParams}]]);
 
             if (!jsApiPay) {
@@ -32,21 +24,17 @@
                 if (res.err_msg == "get_brand_wcpay_request:ok") {
                     //支付完成
                     layer.msg('支付成功', {icon: 1});
-                    isPaid = true;
 
                     location.href = "/wxpay/product/" + [[${orderCode}]];
                 } else {
                     // 支付取消
                     layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {
-
                         location.reload();
 
                         layer.close(index);
                     }, function (index) {
                         location.href = "/wxpay/home/index";
                     });
-
-
                 }
             });
         }
