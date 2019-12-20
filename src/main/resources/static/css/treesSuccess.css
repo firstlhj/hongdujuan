@@ -59,7 +59,6 @@ a {
 
 .tree-number {
     width: 100vw;
-    margin-top: .36rem;
 }
 
 .tree-number .tree-my {
@@ -182,4 +181,13 @@ ul li a.active {
     background: #000;
     z-index: 999;
     display: none;
+}
+
+.ryu{
+    width: 2rem;
+    background-color: red;
+    margin: .1rem auto;
+    font-size: .16rem;
+    border-radius: 10px;
+    color: #fff;
 }
