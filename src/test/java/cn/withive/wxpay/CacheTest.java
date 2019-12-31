@@ -62,4 +62,10 @@ public class CacheTest {
         String key = CacheKeyConstEnum.order_list_key.getKey(OrderTypeEnum.myself.name());
         System.out.println(key);
     }
+
+    @Test
+    void test8() {
+        boolean isExist = orderService.existsByWechatOpenIdAndPaid("ovE2Av4U2JM2Ve_a4LBXmN765ePk");
+        System.out.println(isExist);
+    }
 }

@@ -352,7 +352,10 @@ public class OrderService {
             case redis:
                 ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
                 String str = valueOperations.get(CacheKeyConstEnum.order_list_key.getKey(order.getCode()));
-                if (!StringUtils.isEmpty(str)) {
+                if (StringUtils.isEmpty(str)) {
+                    entity = orderRepository.findById(order.getId())
+                            .orElseThrow(() -> new EntityNotFoundException("订单实体未找到"));
+                } else {
                     entity = JSON.parseObject(str, Order.class);
                 }
                 break;

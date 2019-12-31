@@ -7,6 +7,7 @@ import cn.withive.wxpay.model.OrderModel;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.ProductService;
+import cn.withive.wxpay.service.WXService;
 import cn.withive.wxpay.service.WechatUserService;
 import cn.withive.wxpay.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/order")
@@ -30,6 +33,9 @@ public class OrderController extends BaseController {
 
     @Autowired
     private WechatUserService wechatUserService;
+
+    @Autowired
+    private WXService wxService;
 
     @GetMapping("/list")
     @ResponseBody
@@ -134,5 +140,4 @@ public class OrderController extends BaseController {
             }
         }
     }
-
 }

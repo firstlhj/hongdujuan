@@ -1,7 +1,10 @@
 package cn.withive.wxpay.service;
 
+import cn.withive.wxpay.config.StorageConfig;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
+import cn.withive.wxpay.constant.StorageStrategyEnum;
 import cn.withive.wxpay.entity.Product;
+import cn.withive.wxpay.entity.WechatUser;
 import cn.withive.wxpay.repository.ProductRepository;
 import cn.withive.wxpay.util.RandomUtil;
 import com.alibaba.fastjson.JSON;
@@ -23,6 +26,17 @@ public class ProductService {
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
+
+    public Product save(Product product) {
+        HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();
+
+        hashOperations.put(CacheKeyConstEnum.product_list_key.getKey(), product.getCode(),
+                JSON.toJSONString(product));
+
+        productRepository.save(product);
+
+        return product;
+    }
 
     public Product findByCode(String code) {
         HashOperations<String, String, String> hashOperations = stringRedisTemplate.opsForHash();

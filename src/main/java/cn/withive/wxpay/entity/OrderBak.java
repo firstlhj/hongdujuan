@@ -13,8 +13,8 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "`Order`", uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
-public class Order extends BaseEntity {
+@Table(name = "`OrderBak`", uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
+public class OrderBak extends BaseEntity {
 
     @Getter
     @Setter

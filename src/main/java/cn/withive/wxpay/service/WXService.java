@@ -3,6 +3,7 @@ package cn.withive.wxpay.service;
 import cn.withive.wxpay.callback.GetAccessTokenCallback;
 import cn.withive.wxpay.callback.GetUserInfoCallback;
 import cn.withive.wxpay.config.WXPayMchConfig;
+import cn.withive.wxpay.constant.BillTypeEnum;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.model.WXAccessTokenModel;
@@ -26,8 +27,12 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.util.StringUtils;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -486,6 +491,74 @@ public class WXService {
             return apiConfig;
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    public @Nullable
+    String downloadBill(LocalDate billDate, BillTypeEnum billType) {
+        WXPay wxpay = new WXPay(config);
+
+        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(billDate);
+
+        Map<String, String> reqData = new LinkedHashMap<>();
+        reqData.put("bill_date", date);
+        reqData.put("bill_type", billType.name());
+
+        String bill = null;
+
+        try {
+            Map<String, String> result = wxpay.downloadBill(reqData);
+            if (!"ok".equals(result.get("return_msg"))) {
+                return null;
+            }
+
+            bill = result.get("data");
+            return bill;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
+            return null;
+        }
+    }
+
+    public @Nullable
+    String downloadBill(LocalDate billDate, String folder, BillTypeEnum billType) {
+
+        String content = this.downloadBill(billDate, billType);
+
+        if (StringUtils.isEmpty(content)) {
+            return null;
+        }
+
+        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(billDate);
+
+        try {
+            content = content.replaceAll("`", "");
+
+            String path = String.format("%s\\%s", folder, billType.name());
+            File directory = new File(path);
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            path = String.format("%s\\%s.csv", directory, date);
+            File file = new File(path);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file.getAbsoluteFile());
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.write(content);
+            bw.close();
+
+            log.info("账单路径为：{}", path);
+
+            return content;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error(e.getMessage());
             return null;
         }
     }

@@ -8,8 +8,8 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "WechatUser", uniqueConstraints = {@UniqueConstraint(columnNames = "openId")})
-public class WechatUser extends BaseEntity {
+@Table(name = "WechatUserBak", uniqueConstraints = {@UniqueConstraint(columnNames = "openId")})
+public class WechatUserBak extends BaseEntity {
 
     @Getter
     @Setter

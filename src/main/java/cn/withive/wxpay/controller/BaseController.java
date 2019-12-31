@@ -87,7 +87,7 @@ public class BaseController {
         getResponse().addCookie(cookie);
     }
 
-    protected void addOpenId(String value) {
+    protected void addOpenIdToCookie(String value) {
         // TODO: Use enum replace string
         addCookie("openId", value);
     }

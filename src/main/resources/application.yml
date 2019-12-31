@@ -5,24 +5,30 @@ server:
 project:
   name:
 
+#半小时限制未支付订单为20个
 order:
   create_frequency_value: 20
   # 单位：秒
   create_frequency_expire: 1800
 
-  #半小时限制未支付订单为20个
+#更新用户信息频率：7天1次
+user:
+  sync_info_day: 7
+
 
 logging:
   level:
     root: error
+  file:
+    path: C:\code\wechat.pay
 
 spring:
 
   # data source config
   datasource:
-    url: jdbc:mysql://120.24.168.210:3306/wechat_pay?serverTimezone=GMT%2B8&characterEncoding=utf-8&allowMultiQueries=true
+    url: jdbc:mysql://120.24.168.210:3306/wechat_pay?serverTimezone=GMT%2B8&characterEncoding=utf-8&allowMultiQueries=true&rewriteBatchedStatements=true
     username: root
-    password: root888888
+    password: X5Gtd439xh
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   # jpa config
@@ -38,26 +44,23 @@ spring:
 #        generate_statistics: true
         order_inserts: true
         jdbc:
-          batch_size: 10
+          batch_size: 1000
 
   # thymeleaf config
   thymeleaf:
     cache: false
-  devtools:
-    restart:
-      exclude: templates/**
 
   #redis config
   redis:
     database: 0
     host: 120.24.168.210
     port: 6379
-    password: Admin123456
+    password: TX7hs39zM
     lettuce:
       pool:
-        max-active: 8
-        max-wait: 1
-        max-idle: 8
+        max-active: 100
+        max-wait: 10
+        max-idle: 100
         min-idle: 0
 
 # wechat config
