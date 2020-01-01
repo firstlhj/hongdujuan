@@ -29,6 +29,10 @@ public interface OrderRepository extends JpaRepository<Order, String> {
     @Query(value = "select t from Order t where t.wechatOpenId =?1 and t.code =?2 and t.status=0")
     Order findByWechatOpenIdAndCodeAndStatusIsCreated(String openId, String code);
 
+    List<Order> findByStatusOrderByPayTime(OrderStatusEnum status);
+
+    List<Order> findByStatus(OrderStatusEnum status);
+
     Order findByWechatOpenIdAndCode(String openId, String code);
 
     boolean existsByWechatOpenIdAndCodeAndStatus(String openId, String code, OrderStatusEnum status);

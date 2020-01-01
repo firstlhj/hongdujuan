@@ -23,6 +23,7 @@ public class Order extends BaseEntity {
 
     @Getter
     @Setter
+    @Column(length = 50)
     private String wechatOpenId;
 
     @Getter

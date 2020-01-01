@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -31,9 +32,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -78,12 +77,13 @@ public class CSVTest {
 
     @Test
     void test0() {
-        LocalDate startDate = LocalDate.parse("2019-12-31");
+//        LocalDate startDate = LocalDate.parse("2020-01-01");
+        LocalDate startDate = LocalDate.now();
+
         String content = wxService.downloadBill(startDate, BillTypeEnum.ALL);
         System.out.println(content);
     }
 
-    @Test
     void test2() throws IOException {
         File file = new File("C:\\Users\\qxb51\\Documents\\wxpay.bill\\20191207.csv");
 
@@ -109,6 +109,9 @@ public class CSVTest {
         System.out.println(i);
     }
 
+    /**
+     * 下载对账单
+     */
     @Test
     void downloadBill() {
         LocalDate startDate = LocalDate.parse("2019-12-07");
@@ -122,6 +125,11 @@ public class CSVTest {
         }
     }
 
+    /**
+     * 将对账单中的数据同步到数据库
+     *
+     * @throws IOException
+     */
     @Test
     void syncBillToDB() throws IOException {
         String successFolder = folder + "\\" + BillTypeEnum.SUCCESS;
@@ -137,7 +145,7 @@ public class CSVTest {
         BigDecimal price = new BigDecimal(100);
 
         List<Order> orders = new LinkedList<>();
-        List<WechatUser> users = new LinkedList<>();
+        Map<String, WechatUser> users = new HashMap<>();
 
         for (File file : files) {
             if (!file.isFile()) {
@@ -171,12 +179,11 @@ public class CSVTest {
                 int quantity = amount.divide(price, RoundingMode.HALF_UP).intValue();
                 LocalDateTime payTime = LocalDateTime.parse(payTimeStr,
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-                LocalDateTime now = LocalDateTime.now();
 
                 // 订单数据
                 Order order = new Order();
                 order.setId(RandomUtil.generateUniqueStr());
-                order.setCreatTime(now);
+                order.setCreatTime(payTime);
                 order.setAmount(amount);
                 order.setCode(code);
                 order.setName("");
@@ -191,17 +198,17 @@ public class CSVTest {
                 order.setWechatOpenId(openId);
                 orders.add(order);
 
-                // 微信用户数据
+                // 微信用户数据，需去重
                 WechatUser wechatUser = new WechatUser();
                 wechatUser.setId(RandomUtil.generateUniqueStr());
-                wechatUser.setCreatTime(now);
+                wechatUser.setCreatTime(payTime);
                 wechatUser.setAvatar("");
                 wechatUser.setCity("");
                 wechatUser.setCountry("");
                 wechatUser.setNickname("");
                 wechatUser.setOpenId(openId);
                 wechatUser.setProvince("");
-                users.add(wechatUser);
+                users.put(openId, wechatUser);
             }
 
             reader.close();
@@ -240,20 +247,21 @@ public class CSVTest {
         orderRepository.deleteAllInBatch();
         orderRepository.saveAll(orders);
         wechatUserRepository.deleteAllInBatch();
-        wechatUserRepository.saveAll(users);
+        wechatUserRepository.saveAll(users.values());
     }
 
     /**
      * 同步备份数据到数据库
      */
     @Test
-    void syncBakDB() {
-        List<Order> orders = orderRepository.findAll();
-        List<OrderBak> orderBaks = orderBakRepository.findAll();
+    void syncBakToDB() {
+        List<Order> orders = orderRepository.findByStatus(OrderStatusEnum.Paid);
+        List<OrderBak> orderBaks = orderBakRepository.findByStatus(OrderStatusEnum.Paid);
         for (Order order : orders) {
             Optional<OrderBak> bak = orderBaks.stream().filter(x -> x.getCode().equals(order.getCode())).findFirst();
 
             bak.ifPresent(x -> {
+                order.setCreatTime(x.getCreatTime());
                 order.setName(x.getName());
                 order.setPhone(x.getPhone());
                 order.setType(x.getType());
@@ -265,9 +273,11 @@ public class CSVTest {
         List<WechatUser> users = wechatUserRepository.findAll();
         List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
         for (WechatUser user : users) {
-            Optional<WechatUserBak> bak = userBaks.stream().filter(x -> x.getOpenId().equals(user.getOpenId())).findFirst();
+            Optional<WechatUserBak> bak =
+                    userBaks.stream().filter(x -> x.getOpenId().equals(user.getOpenId())).findFirst();
 
             bak.ifPresent(x -> {
+                user.setCreatTime(x.getCreatTime());
                 user.setAvatar(x.getAvatar());
                 user.setCity(x.getCity());
                 user.setCountry(x.getCountry());
@@ -278,12 +288,13 @@ public class CSVTest {
         wechatUserRepository.saveAll(users);
     }
 
+    // 同步数据库到缓存
     @Test
     void syncDBtoCache() {
+
         List<Order> orders =
                 orderRepository.
-                        findAll(Sort.sort(Order.class).by((Function<Order, LocalDateTime>) order -> order.getPayTime())
-                                .ascending());
+                        findByStatusOrderByPayTime(OrderStatusEnum.Paid);
 
         for (Order order : orders) {
             orderService.markToPaid(order);
@@ -302,5 +313,43 @@ public class CSVTest {
             hashOperations.put(CacheKeyConstEnum.product_list_key.getKey(), product.getCode(),
                     JSON.toJSONString(product));
         }
+    }
+
+    /**
+     * 将数据库数据差量备份
+     */
+    @Test
+    void syncDBToBak() {
+        List<Order> orders = orderRepository.findByStatus(OrderStatusEnum.Paid);
+        List<OrderBak> orderBaks = orderBakRepository.findByStatus(OrderStatusEnum.Paid);
+        List<OrderBak> needToBak = new LinkedList<>();
+        for (Order order : orders) {
+            boolean isPresent = orderBaks.stream().anyMatch(x -> x.getCode().equals(order.getCode()));
+
+            if (!isPresent) {
+                String str = JSON.toJSONString(order);
+                OrderBak bak = JSON.parseObject(str, OrderBak.class);
+
+                needToBak.add(bak);
+                System.out.println(str);
+            }
+        }
+        orderBakRepository.saveAll(needToBak);
+
+        List<WechatUser> users = wechatUserRepository.findAll();
+        List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
+        List<WechatUserBak> needToBak2 = new LinkedList<>();
+        for (WechatUser user : users) {
+            boolean isPresent = userBaks.stream().anyMatch(x -> x.getOpenId().equals(user.getOpenId()));
+
+            if (!isPresent) {
+                String str = JSON.toJSONString(user);
+                WechatUserBak bak = JSON.parseObject(str, WechatUserBak.class);
+
+                needToBak2.add(bak);
+                System.out.println(str);
+            }
+        }
+        wechatUserBakRepository.saveAll(needToBak2);
     }
 }

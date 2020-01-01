@@ -58,9 +58,10 @@ public class ProductService {
             result.setName("小树");
             result.setCode("001");
             result.setAmount(new BigDecimal(0.01).setScale(2, RoundingMode.HALF_UP));
-            hashOperations.put(CacheKeyConstEnum.product_list_key.getKey(), code, JSON.toJSONString(result));
             productRepository.save(result);
         }
+
+        hashOperations.put(CacheKeyConstEnum.product_list_key.getKey(), code, JSON.toJSONString(result));
 
         return result;
     }

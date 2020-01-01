@@ -525,28 +525,33 @@ public class WXService {
     public @Nullable
     String downloadBill(LocalDate billDate, String folder, BillTypeEnum billType) {
 
-        String content = this.downloadBill(billDate, billType);
+        // 创建父目录
+        folder = String.format("%s\\%s", folder, billType.name());
+        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(billDate);
+        String path = String.format("%s\\%s.csv", folder, date);
 
-        if (StringUtils.isEmpty(content)) {
-            return null;
+        File file = new File(path);
+        if (file.exists()) {
+            // 账单文件存在
+            return file.toString();
         }
 
-        String date = DateTimeFormatter.ofPattern("yyyyMMdd").format(billDate);
-
         try {
-            content = content.replaceAll("`", "");
-
-            String path = String.format("%s\\%s", folder, billType.name());
-            File directory = new File(path);
+            File directory = new File(folder);
             if (!directory.exists()) {
                 directory.mkdirs();
             }
 
-            path = String.format("%s\\%s.csv", directory, date);
-            File file = new File(path);
-            if (!file.exists()) {
-                file.createNewFile();
+            // 创建指定文件
+            String content = this.downloadBill(billDate, billType);
+
+            if (StringUtils.isEmpty(content)) {
+                return null;
             }
+
+            file.createNewFile();
+
+            content = content.replaceAll("`", "");
 
             FileWriter fw = new FileWriter(file.getAbsoluteFile());
             BufferedWriter bw = new BufferedWriter(fw);
@@ -556,7 +561,7 @@ public class WXService {
             log.info("账单路径为：{}", path);
 
             return content;
-        } catch (Exception e) {
+        } catch (IOException e) {
             e.printStackTrace();
             log.error(e.getMessage());
             return null;

@@ -1,5 +1,6 @@
 package cn.withive.wxpay;
 
+import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.constant.OrderTypeEnum;
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.Product;
@@ -87,5 +88,16 @@ public class DbTest {
     void test6() {
         Page<Product> page = productRepository.findAll(PageRequest.of(0, 1));
         System.out.println(JSON.toJSONString(page.getContent()));
+    }
+
+    @Test
+    void test7() {
+        List<Order> orders =
+                orderRepository.
+                        findByStatusOrderByPayTime(OrderStatusEnum.Paid);
+
+        for (Order order : orders) {
+            System.out.println(order.getPayTime());
+        }
     }
 }

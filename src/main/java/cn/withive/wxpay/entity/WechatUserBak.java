@@ -3,6 +3,7 @@ package cn.withive.wxpay.entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -13,6 +14,7 @@ public class WechatUserBak extends BaseEntity {
 
     @Getter
     @Setter
+    @Column(length = 50)
     private String openId;
 
     @Getter

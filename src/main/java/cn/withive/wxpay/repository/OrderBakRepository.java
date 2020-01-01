@@ -2,6 +2,7 @@ package cn.withive.wxpay.repository;
 
 import cn.withive.wxpay.constant.OrderStatusEnum;
 import cn.withive.wxpay.constant.OrderTypeEnum;
+import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.OrderBak;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,4 +33,6 @@ public interface OrderBakRepository extends JpaRepository<OrderBak, String> {
     OrderBak findByWechatOpenIdAndCode(String openId, String code);
 
     boolean existsByWechatOpenIdAndCodeAndStatus(String openId, String code, OrderStatusEnum status);
+
+    List<OrderBak> findByStatus(OrderStatusEnum status);
 }
