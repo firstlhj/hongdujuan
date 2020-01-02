@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="www.thymeleaf.org">
 <head>
-    <title>Error page</title>
+    <title>发生错误了</title>
 </head>
 <body>
 <div class="layui-fluid">
@@ -12,15 +12,11 @@
                 <td>url: <span th:text="${url}"></span></td>
             </tr>
             <tr>
-                <td>exception: <span th:text="${ex.getMessage()}"></span></td>
-            </tr>
-            <tr>
-                <td>detail: <span th:text="${ex}"></span></td>
+                <td>message: <span th:text="${ex.getMessage()}"></span></td>
             </tr>
             </tbody>
         </table>
     </div>
-
 </div>
 </body>
 </html>

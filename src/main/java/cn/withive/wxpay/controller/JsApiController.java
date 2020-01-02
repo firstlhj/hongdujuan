@@ -28,47 +28,38 @@ public class JsApiController extends BaseController {
      * 获取微信权限验证配置
      * @return
      */
-    @PostMapping("/getConfig")
-    @ResponseBody
-    public ResModel getConfig(@CookieValue(value = "openId") String openId, String url) {
-        if (StringUtils.isEmptyOrWhitespace(openId)) {
-            return fail("缺少必要参数：微信用户id");
-        }
-        if (StringUtils.isEmptyOrWhitespace(url)) {
-            url = request.getHeader("Referer");
-        }
-        if (StringUtils.isEmpty(url)) {
-            return fail("缺少必要参数：访问页面url");
-        }
-
-        boolean exists = wechatUserService.existsByOpenId(openId);
-        if (!exists) {
-            // 不存在此用户
-            return fail("系统中不存在此用户");
-        }
-
-        try {
-            String accessToken = WXService.getGlobalToken();
-
-            if (StringUtils.isEmpty(accessToken)) {
-                return fail("获取微信js权限验证配置异常");
-            }
-
-            String ticket = WXService.getJsApiTicket(accessToken);
-
-            if (StringUtils.isEmpty(ticket)) {
-                return fail("获取微信js权限验证配置异常");
-            }
-
-            Map<String, String> config = WXService.getJsApiConfig(ticket, url);
-
-            return success(config);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            log.error(ex.getMessage());
-
-            return fail(ex.getMessage());
-        }
-    }
+//    @PostMapping("/getConfig")
+//    @ResponseBody
+//    public ResModel getConfig(@CookieValue(value = "openId") String openId, String url) {
+//        if (StringUtils.isEmptyOrWhitespace(openId)) {
+//            return fail("缺少必要参数：微信用户id");
+//        }
+//        if (StringUtils.isEmptyOrWhitespace(url)) {
+//            url = request.getHeader("Referer");
+//        }
+//        if (StringUtils.isEmpty(url)) {
+//            return fail("缺少必要参数：访问页面url");
+//        }
+//
+//        boolean exists = wechatUserService.existsByOpenId(openId);
+//        if (!exists) {
+//            // 不存在此用户
+//            return fail("系统中不存在此用户");
+//        }
+//
+//        try {
+//            Map<String, String> config = WXService.getJsApiConfig(url);
+//            if (config == null) {
+//                return fail("获取微信js权限验证配置异常");
+//            }
+//
+//            return success(config);
+//
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            log.error(ex.getMessage());
+//
+//            return fail(ex.getMessage());
+//        }
+//    }
 }

@@ -16,7 +16,7 @@
 
             if (!jsApiPay) {
                 layer.alert("获取支付参数异常", {icon: 1}, function (index) {
-                    location.href = "/wxpay/home/index";
+                    location.href = wxpayUtil.getHomeUrl();
                 })
             }
 
@@ -33,7 +33,7 @@
 
                         layer.close(index);
                     }, function (index) {
-                        location.href = "/wxpay/home/index";
+                        location.href = wxpayUtil.getHomeUrl();
                     });
                 }
             });

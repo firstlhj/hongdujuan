@@ -1,5 +1,6 @@
 package cn.withive.wxpay.controller;
 
+import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.model.ResModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,11 @@ public class BaseController {
         }
     }
 
+    protected void addCookie(CookieEnum name, String value) {
+        this.addCookie(name.name(), value);
+    }
+
+    @Deprecated
     protected void addCookie(String name, String value) {
         Cookie cookie = new Cookie(name, value);
         cookie.setMaxAge(2 * 60 * 60);
@@ -81,7 +87,7 @@ public class BaseController {
     }
 
     protected void removeCookie(String name) {
-        Cookie cookie = new Cookie(name,null);
+        Cookie cookie = new Cookie(name, null);
         cookie.setMaxAge(0);
         cookie.setPath("/");
         getResponse().addCookie(cookie);
@@ -115,6 +121,10 @@ public class BaseController {
         } else {
             return request.getRemoteAddr();
         }
+    }
+
+    protected String getRequestURL() {
+        return request.getRequestURL().toString() + "?" + request.getQueryString();
     }
 
     protected HttpServletRequest getRequest() {

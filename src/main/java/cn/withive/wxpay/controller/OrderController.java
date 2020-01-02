@@ -5,10 +5,7 @@ import cn.withive.wxpay.entity.Product;
 import cn.withive.wxpay.model.ListModel;
 import cn.withive.wxpay.model.OrderModel;
 import cn.withive.wxpay.model.ResModel;
-import cn.withive.wxpay.service.OrderService;
-import cn.withive.wxpay.service.ProductService;
-import cn.withive.wxpay.service.WXService;
-import cn.withive.wxpay.service.WechatUserService;
+import cn.withive.wxpay.service.*;
 import cn.withive.wxpay.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
+import javax.persistence.EntityNotFoundException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Map;
@@ -33,6 +31,9 @@ public class OrderController extends BaseController {
 
     @Autowired
     private WechatUserService wechatUserService;
+
+    @Autowired
+    private AreaService areaService;
 
     @Autowired
     private WXService wxService;
@@ -96,6 +97,13 @@ public class OrderController extends BaseController {
         if (StringUtils.isEmptyOrWhitespace(model.getName())) {
             return fail("缺少创建订单必要参数：姓名");
         }
+        if (StringUtils.isEmptyOrWhitespace(model.getAreaCode())) {
+            return fail("缺少创建订单必要参数：区域编号");
+        }
+        boolean existArea = areaService.exist(model.getAreaCode());
+        if (!existArea) {
+            return fail("创建订单失败：不存在的区域编号");
+        }
 
         // 对同一个openId进行加锁
         synchronized (openId) {
@@ -126,6 +134,7 @@ public class OrderController extends BaseController {
                 entity.setPhone(model.getPhone());
                 entity.setAmount(product.getAmount().multiply(quantity));
                 entity.setRemark(model.getRemark());
+                entity.setAreaCode(model.getAreaCode());
 
                 orderService.create(entity);
 

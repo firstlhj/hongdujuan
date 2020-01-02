@@ -4,6 +4,8 @@ import cn.withive.wxpay.constant.OrderTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.persistence.Column;
+
 public class OrderModel {
 
     @Getter
@@ -29,4 +31,8 @@ public class OrderModel {
     @Getter
     @Setter
     public String remark;
+
+    @Getter
+    @Setter
+    public String areaCode;
 }

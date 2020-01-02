@@ -2,7 +2,7 @@
 <script src="/wxpay/plugin/layer/layer.min.js"></script>
 <script src="/wxpay/js/rem.js"></script>
 
-<script>
+<script th:inline="javascript">
     function showLoad() {
         setTimeout(function () {
 
@@ -19,9 +19,44 @@
     }
 
     $(function () {
-        showLoad();
+        // showLoad();
+        // const jsapi = JSON.parse([[${jsapi}]]);
+        const jsapi = [[${jsapi}]];
+        // console.log(jsapi);
 
-        closeLoad();
+        if (jsapi) {
+            wx.config(Object.assign({
+                debug: false,
+                jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
+            }, jsapi));
+
+            // 微信js初始化完成回调
+            wx.ready(function () {
+                wx.updateTimelineShareData({
+                    title: '邀请您为毛主席家乡种棵红杜鹃',
+                    link: wxpayUtil.getHomeUrl(), //该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    // imgUrl: '/img/shu.png', // 分享图标
+                    success: function () {
+                        // 设置成功
+                    }
+                });
+
+                wx.updateAppMessageShareData({
+                    title: '邀请您为毛主席家乡种棵红杜鹃',
+                    desc: '贯彻习总书记“把红色资源利用好，把红色传统发扬好，把红色基因传承好”邀请您为毛主席家乡种棵红杜鹃，善培中国梦，直映韶山红',
+                    link: wxpayUtil.getHomeUrl(), // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                    // imgUrl: '/img/shu.png', // 分享图标
+                    success: function () {
+                        // 设置成功
+                    }
+                });
+            });
+
+            wx.error(function (res) {
+                layer.msg("微信分享接口初始化失败");
+            });
+        }
+
     });
 
 </script>

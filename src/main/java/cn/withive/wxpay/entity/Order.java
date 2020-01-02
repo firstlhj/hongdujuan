@@ -67,4 +67,9 @@ public class Order extends BaseEntity {
     @Getter
     @Setter
     private String remark;
+
+    @Getter
+    @Setter
+    @Column(length = 32)
+    private String areaCode;
 }

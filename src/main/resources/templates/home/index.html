@@ -108,13 +108,13 @@
     <div id='guide'></div>
 
 </div>
+
 </body>
 
 </html>
 
 <template th:replace="shared/layout_scripts"></template>
-<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
-<script>
+<script th:inline="javascript">
     //节流阀
     const throttle = (fun, delay) => {
         let last, deferTimer
@@ -227,60 +227,11 @@
     var orderType;
 
     $(function () {
-
-        // 获取当前链接地址，不带参数部分
-        const currentUrl = location.origin + location.pathname;
-
-        // 微信js初始化完成回调
-        wx.ready(function () {
-            wx.updateTimelineShareData({
-                title: '种植红杜鹃', // 分享标题
-                link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                // imgUrl: '/img/shu.png', // 分享图标
-                success: function () {
-                    // 设置成功
-                }
-            });
-
-            wx.updateAppMessageShareData({
-                title: '种植红杜鹃', // 分享标题
-                desc: '为主席家乡种植红杜鹃', // 分享描述
-                link: currentUrl, // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
-                // imgUrl: '/img/shu.png', // 分享图标
-                success: function () {
-                    // 设置成功
-                }
-            });
-        });
-
-        wx.error(function (res) {
-            layer.msg("微信分享接口初始化失败");
-        });
-
-        const params = {};
-        // 授权验证js api
-        $.ajax({
-            type: "post",
-            dataType: 'json',
-            url: "/wxpay/jspai/getConfig",
-            contentType: "application/json;charset=utf-8",
-            data: JSON.stringify(params),
-            error: function (res) {
-                closeLoad();
-            },
-            success: function (res) {
-                closeLoad();
-
-                if (res.code) {
-                    wx.config(Object.assign({
-                        debug: false,
-                        jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData'],
-                    }, res.data));
-                } else {
-                    layer.alert(res.msg, {icon: 2});
-                }
-            }
-        });
+        let area = wxpayUtil.getQueryString('area');
+        wxpayUtil.trySetArea(area);
+        // pageConfig({
+        //     share: false // 开启分享功能
+        // });
 
         // 数量验证
         $("#quantity").change(function () {
@@ -359,6 +310,7 @@
                 quantity: quantity,
                 name: name,
                 phone: phone,
+                areaCode: area
             };
 
             $.ajax({

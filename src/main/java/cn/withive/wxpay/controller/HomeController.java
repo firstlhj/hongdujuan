@@ -1,9 +1,10 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.RedirectViewEnum;
+import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.entity.WechatUser;
 import cn.withive.wxpay.model.WXAccessTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
+import cn.withive.wxpay.service.AreaService;
 import cn.withive.wxpay.service.OrderService;
 import cn.withive.wxpay.service.WXService;
 import cn.withive.wxpay.service.WechatUserService;
@@ -17,22 +18,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import static cn.withive.wxpay.constant.RedirectViewEnum.valueOf;
 
 @Controller
-@RequestMapping("/home")
+@RequestMapping({"", "/home"})
 public class HomeController extends BaseController {
 
     @Autowired
-    private WXService WXService;
+    private WXService wxService;
 
     @Autowired
     private WechatUserService wechatUserService;
 
     @Autowired
     private OrderService orderService;
+
+    @Autowired
+    private AreaService areaService;
 
     @Value("${user.sync_info_day}")
     private Integer syncUserInfoDay;
@@ -48,30 +54,42 @@ public class HomeController extends BaseController {
     public String authorize(String redirectUri, String state) {
 
         if (StringUtils.isEmptyOrWhitespace(redirectUri)) {
-            redirectUri = WXService.getConfig().getServerUrl() + "/home/index";
+            redirectUri = wxService.getConfig().getServerUrl();
         }
 
-        String url = WXService.getAuthorizeUrl(redirectUri, "snsapi_userinfo", state);
+        String url = wxService.getAuthorizeUrl(redirectUri, "snsapi_userinfo", state);
         return "redirect:" + url;
     }
 
     @RequestMapping({"", "/index"})
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId, String code,
-                              String state) {
+                              String state, String area) {
+        if (StringUtils.isEmptyOrWhitespace(state) && StringUtils.isEmptyOrWhitespace(area)) {
+            throw new IllegalArgumentException("页面不存在区域编号");
+        }
+        if (!StringUtils.isEmptyOrWhitespace(area)) {
+            boolean existArea = areaService.exist(area);
+            if (existArea) {
+                addCookie(CookieEnum.area, area);
+            } else {
+                throw new EntityNotFoundException("不存在区域编号：" + area);
+            }
+        }
+
         ModelAndView view = new ModelAndView("home/index");
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             if (StringUtils.isEmptyOrWhitespace(code)) {
                 String url = "redirect:/home/authorize";
-                if (!StringUtils.isEmptyOrWhitespace(state)) {
-                    url += "?state=" + state;
+                if (!StringUtils.isEmptyOrWhitespace(area)) {
+                    url += "?state=" + area;
                 }
 
                 // 没有openId,也没有code,那么重定向到微信验证页面
                 view.setViewName(url);
                 return view;
             } else {
-                WXAccessTokenModel accessTokenModel = WXService.getAccessToken(code);
+                WXAccessTokenModel accessTokenModel = wxService.getAccessToken(code);
                 if (accessTokenModel == null) {
                     throw new InternalException("获取微信用户授权数据异常");
                 }
@@ -80,7 +98,7 @@ public class HomeController extends BaseController {
 
                 String url = "redirect:/home/index";
                 if (!StringUtils.isEmptyOrWhitespace(state)) {
-                    url += "?state=" + state;
+                    url += "?area=" + state;
                 }
 
                 // 避免地址栏上出现code参数
@@ -91,14 +109,14 @@ public class HomeController extends BaseController {
 
         WechatUser user = wechatUserService.findByOpenId(openId);
         if (user == null) {
-            String token = WXService.getAccessTokenFormCache(openId);
+            String token = wxService.getAccessTokenFormCache(openId);
             if (StringUtils.isEmpty(token)) {
                 // token 失效了
                 removeOpenId();
                 view.setViewName("redirect:/home/index");
                 return view;
             }
-            WXUserInfoModel userInfoModel = WXService.getUserInfo(token, openId);
+            WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
             if (userInfoModel == null) {
                 throw new InternalException("获取微信用户信息异常");
             }
@@ -116,14 +134,14 @@ public class HomeController extends BaseController {
         } else {
             // 用户信息超过七天,或者缺少详细信息,那么拉取更新用户最新个人信息
             if (user.getCreatTime().plusDays(syncUserInfoDay).isBefore(LocalDateTime.now()) || StringUtils.isEmptyOrWhitespace(user.getNickname())) {
-                String token = WXService.getAccessTokenFormCache(openId);
+                String token = wxService.getAccessTokenFormCache(openId);
                 if (StringUtils.isEmpty(token)) {
                     // token 失效了
                     removeOpenId();
                     view.setViewName("redirect:/home/index");
                     return view;
                 }
-                WXUserInfoModel userInfoModel = WXService.getUserInfo(token, openId);
+                WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
                 if (userInfoModel == null) {
                     throw new InternalException("获取微信用户信息异常");
                 }
@@ -138,23 +156,8 @@ public class HomeController extends BaseController {
             }
         }
 
-
-//        if (!StringUtils.isEmptyOrWhitespace(state)) {
-//            try {
-//                RedirectViewEnum viewEnum = valueOf(state);
-//
-//                switch (viewEnum) {
-//                    case pay:
-//                        view.setViewName("redirect:/pay/index");
-//                        break;
-//                    case product:
-//                        view.setViewName("redirect:/product/index");
-//                        break;
-//                }
-//            } catch (IllegalArgumentException ignored) {
-//
-//            }
-//        }
+        Map<String, String> config = wxService.getJsApiConfig(getRequestURL());
+        view.addObject("jsapi", config);
 
         boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
         // 用户曾经下过订单，那么页面上显示我的认种页面

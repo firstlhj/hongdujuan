@@ -8,6 +8,7 @@ public enum CacheKeyConstEnum {
     order_secondtop_key("wxpay:count:secondtop"),
     order_list_key("wxpay:order:%s"),
     product_list_key("wxpay:product"),
+    area_list_key("wxpay:area"),
     user_list_key("wxpay:wechatUser"),
     user_rank_key("wxpay:wechatUser:rank"),
     user_tree_key("wxpay:wechatUser:tree"),
