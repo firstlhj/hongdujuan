@@ -3,7 +3,7 @@ server:
   port: 8081
 
 project:
-  name:
+  url: https://www.hongdujuan.xiaoheikeji.net
 
 #半小时限制未支付订单为20个
 order:

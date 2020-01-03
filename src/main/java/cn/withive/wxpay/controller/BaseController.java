@@ -26,7 +26,7 @@ public class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
-    @Value("${WX.serverUrl}")
+    @Value("${project.url}")
     protected String serverUrl;
 
     protected ResModel success(String msg) {
