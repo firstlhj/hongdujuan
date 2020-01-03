@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wxpay/css/treesSuccess.css">
+    <link rel="stylesheet" th:href="@{'/wxpay/css/treesSuccess.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
     <title>认种中心</title>
     <div th:replace="shared/layout_header"></div>
 </head>
@@ -19,10 +19,11 @@
     <div class="tree">
         <img style="margin-left: 1.6rem;width: 60%;" src="https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/shu.png"
              alt="">
+        <div class="leave"></div>
     </div>
     <div class="tree-number">
         <div class="tree-my">
-            <p th:text="${model.getRank()}">0</p>
+            <p th:text="${rank}">0</p>
         </div>
     </div>
     <div class="ryu">
@@ -44,7 +45,7 @@
     </div>
 </div>
 
-<div class="popup">
+<div class="popup" id="popup1">
     <div class="detail">
         <span style="width: 30%;">付款时间</span>
         <span style="width: 26%;">订单金额</span>
@@ -74,6 +75,36 @@
         <img src="/wxpay/img/gbi.png" alt="">
     </div>
 </div>
+
+<div class="popup" id="popup">
+    <div class="popup-title">
+        <p id="description">留言祝福</p>
+    </div>
+    <div class="text-box" style="margin: 1vw 8vw 0 6vw;">
+        <textarea
+                class="wishContent"
+                maxlength="500"
+                placeholder="写下您的美好祝福吧"
+                cols="26"
+                rows="6"
+                th:text="${model.getSignature()}"
+        ></textarea>
+        <span class="wordsNum">(0/500)</span>
+    </div>
+    <div>
+        <div class="confirm-box">
+            <div class="whether" id="determine">
+                <p id="sign" style="color: #333;font-size: .46rem;padding: .2rem 0; font-weight: 700;">
+                    确认
+                </p>
+            </div>
+        </div>
+        <div class="down">
+            <img src="/wxpay/img/gbi.png" alt=""/>
+        </div>
+    </div>
+</div>
+
 <div id='guide'></div>
 <footer class="footer">
     <p style="font-size: .4rem;">小黑物联科技提供技术支持</p>
@@ -83,45 +114,43 @@
 
 <template th:replace="shared/layout_scripts"></template>
 <script>
-    let guide = document.getElementById('guide');
-    $('#personal').on('click', function () {
-        $('.popup').fadeIn(500);
-        $('#guide').fadeIn(500);
-        // stopBodyScroll(guide)
-    })
-    $('#guide').on('click', function () {
-        $('.popup').fadeOut(500);
-        $('#guide').fadeOut(500);
-        // stopBodyScroll()
-    })
-    $('.down').on('click', function () {
-        $('.popup').fadeOut(500);
-        $('#guide').fadeOut(500);
-        // stopBodyScroll()
-    })
-    //   guide.onclick=function(){
-    //     popup.style.display='none';
-    //     guide.style.display='none';
-    //     stopBodyScroll();
-    //   }
-    //    down.onclick=function(){
-    //     popup.style.display='none';
-    //     guide.style.display='none';
-    //     stopBodyScroll();
-    //   }
+    const checkStrLengths = (str, maxLength) => {
+        let result = 0
+        str && str.length > maxLength ? (result = maxLength) : (result = str.length)
 
-    function toDateString(time) {
-        var d = new Date(time),
-            month = '' + (d.getMonth() + 1),
-            day = '' + d.getDate(),
-            year = d.getFullYear();
+        if (result >= 500) {
+            layer.msg('字数不能超过500', {icon: 0});
+        }
 
-        if (month.length < 2) month = '0' + month;
-        if (day.length < 2) day = '0' + day;
-
-        return [year, month, day].join('-');
+        return result
     }
 
+    $('.wishContent').on('input', function () {
+        var userDesc = $(this).val()
+        let len
+        userDesc
+            ? (len = checkStrLengths(userDesc, 500))
+            : (len = checkStrLengths(userDesc, 500));
+        $('.wordsNum').html(len + '/500')
+    })
+
+    $('#personal').on('click', function () {
+        $('#popup1').fadeIn(500)
+        $('#guide').fadeIn(500)
+    })
+    $('#guide').on('click', function () {
+        $('#popup1').fadeOut(500)
+        $('#guide').fadeOut(500)
+    })
+    $('.down').on('click', function () {
+        $('#popup1').fadeOut(500)
+        $('#popup').fadeOut(500)
+        $('#guide').fadeOut(500)
+    })
+    $('.leave').on('click', function () {
+        $('#popup').fadeIn(500)
+        $('#guide').fadeIn(500)
+    })
 
     function loadPage(page, size) {
         $.ajax({
@@ -132,7 +161,7 @@
                     $("#orderContent").empty();
 
                     for (data of res.data) {
-                        let payTime = toDateString(data.payTime);
+                        let payTime = wxpayUtil.toDateString(data.payTime);
                         const html = `<div class="detail" style="padding-top: .46rem;padding-bottom: .3rem;">
                                         <span style="width: 30%;">${payTime}</span>
                                         <span style="width: 24%;">${data.amount}</span>
@@ -162,7 +191,7 @@
     let size = 5;
 
     $(function () {
-        $("#homePage").click(function(){
+        $("#homePage").click(function () {
             location.href = wxpayUtil.getHomeUrl();
         });
 
@@ -191,6 +220,37 @@
 
             $("#pageNum").text(page);
             loadPage(page, size);
+        });
+
+        $("#sign").click(function () {
+            const signature = $('.wishContent').val();
+            // if (!signature) {
+            //     layer.alert("留言不能为空", {icon: 2});
+            //     return;
+            // }
+
+            const param = {
+                signature: signature
+            };
+
+            $.ajax({
+                url: '/wxpay/user/sign',
+                method: "post",
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(param),
+                success: function (res) {
+                    if (res.code) {
+                        layer.msg("留言成功");
+                        $('#popup').fadeOut(500);
+                        $('#guide').fadeOut(500);
+                    } else {
+                        layer.alert(res.msg, {icon: 2});
+                    }
+                },
+                error: function (response) {
+                    layer.alert(res.msg, {icon: 2});
+                }
+            });
         });
     })
 </script>

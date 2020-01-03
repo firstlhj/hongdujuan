@@ -2,6 +2,8 @@ package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.entity.WechatUser;
+import cn.withive.wxpay.model.ResModel;
+import cn.withive.wxpay.model.UserModel;
 import cn.withive.wxpay.model.WXAccessTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
 import cn.withive.wxpay.service.AreaService;
@@ -13,8 +15,7 @@ import jdk.nashorn.internal.runtime.regexp.joni.exception.InternalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
@@ -65,7 +66,7 @@ public class HomeController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId, String code,
                               String state, String area) {
         if (StringUtils.isEmptyOrWhitespace(state) && StringUtils.isEmptyOrWhitespace(area)) {
-            throw new IllegalArgumentException("页面不存在区域编号");
+            return errorView(new IllegalArgumentException("页面不存在区域编号"));
         }
         if (!StringUtils.isEmptyOrWhitespace(area)) {
             boolean existArea = areaService.exist(area);
@@ -162,7 +163,15 @@ public class HomeController extends BaseController {
         boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
         // 用户曾经下过订单，那么页面上显示我的认种页面
         view.addObject("showMyTree", isExist);
+        view.addObject("realName", user.getRealName());
+        view.addObject("phone", user.getPhone());
 
         return view;
+    }
+
+    @GetMapping("/test")
+    @ResponseBody
+    public ResModel sign() {
+        return success(null, getRequestURL());
     }
 }

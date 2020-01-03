@@ -2,6 +2,7 @@ package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.model.ResModel;
+import lombok.SneakyThrows;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +10,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.URL;
 
 @Component
 public class BaseController {
@@ -60,6 +63,14 @@ public class BaseController {
         resModel.setData(data);
         resModel.setCode(ResModel.StatusEnum.FAILURE);
         return resModel;
+    }
+
+    protected ModelAndView errorView(Exception ex) {
+        ModelAndView view = new ModelAndView();
+        view.addObject("ex", new IllegalArgumentException("页面不存在区域编号"));
+        view.addObject("url", request.getRequestURL());
+        view.setViewName("error/50x");
+        return view;
     }
 
     public void showCookies(HttpServletRequest request) {
@@ -124,7 +135,18 @@ public class BaseController {
     }
 
     protected String getRequestURL() {
-        return request.getRequestURL().toString() + "?" + request.getQueryString();
+        String requestUrl = request.getRequestURL().toString();
+        String queryString = request.getQueryString();
+        if (!StringUtils.isEmptyOrWhitespace(queryString)) {
+            requestUrl = requestUrl + "?" + queryString;
+        }
+
+//        URL requestURL = new URL(request.getRequestURL().toString());
+//        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
+//        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
+
+
+        return requestUrl;
     }
 
     protected HttpServletRequest getRequest() {

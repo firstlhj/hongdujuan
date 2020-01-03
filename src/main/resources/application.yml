@@ -13,12 +13,12 @@ order:
 
 #更新用户信息频率：7天1次
 user:
-  sync_info_day: 7
+  sync_info_day: 1
 
 
 logging:
   level:
-    root: error
+    root: info
   file:
     path: C:\code\wechat.pay
 
@@ -72,8 +72,8 @@ WX:
   SSlCertPath:
   SSlCertPassword:
   notifyUrl:
-    pay: http://www.hongdujuan.xiaoheikeji.net/wxpay/pay/payNotify
-    refund: http://www.hongdujuan.xiaoheikeji.net/wxpay/pay/refundNotify
-  serverUrl: http://www.hongdujuan.xiaoheikeji.net/wxpay
+    pay: https://www.hongdujuan.xiaoheikeji.net/wxpay/pay/payNotify
+    refund: https://www.hongdujuan.xiaoheikeji.net/wxpay/pay/refundNotify
+  serverUrl: https://www.hongdujuan.xiaoheikeji.net/wxpay
   tokenServerUrl:
 

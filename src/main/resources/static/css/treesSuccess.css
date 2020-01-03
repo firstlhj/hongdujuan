@@ -1,6 +1,6 @@
 @font-face {
     font-family: LIG;
-    src: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/DINPro-Light.otf')
+    src: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/DINPro-Light.otf');
 }
 
 body,
@@ -12,8 +12,9 @@ ul {
 }
 
 body {
+    /* url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') */
     background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/renzhongsucess.png') no-repeat;
-    height: 100vh;
+    /* height: 100vh; */
     background-size: 100%;
     background-color: #e52a2f;
 }
@@ -39,26 +40,37 @@ a {
 .whact-name {
     width: 50%;
     margin: 0 auto;
-    padding: .05rem .2rem;
+    padding: 0.05rem 0.2rem;
     text-align: center;
     border-radius: 12px;
     color: red;
-    margin-top: .26rem;
-    font-size: .38rem;
-    letter-spacing: .05rem;
+    margin-top: 0.26rem;
+    font-size: 0.38rem;
+    letter-spacing: 0.05rem;
 }
 
 .center {
     text-align: center;
 }
 
+.leave {
+    width: 15vw;
+    background-color: #333;
+    opacity: 0;
+    height: 6vh;
+    position: absolute;
+    right: 1rem;
+    bottom: 8.4rem;
+}
+
 .tree {
     width: 100vw;
-    margin-top: 4rem;
+    margin-top: 1.6rem;
 }
 
 .tree-number {
     width: 100vw;
+    margin-top: 0.36rem;
 }
 
 .tree-number .tree-my {
@@ -69,15 +81,15 @@ a {
     height: 40px;
     color: #fff;
     line-height: 40px;
-    font-size: .38rem;
-    letter-spacing: .03rem;
+    font-size: 0.38rem;
+    letter-spacing: 0.03rem;
 }
 
 .content-title {
-    font-size: .36rem;
-    margin-top: .3rem;
+    font-size: 0.36rem;
+    /* margin-top: .3rem; */
     color: #fff;
-    letter-spacing: .03rem;
+    letter-spacing: 0.03rem;
 }
 
 .cert {
@@ -88,19 +100,18 @@ a {
     border-radius: 30px;
     text-align: center;
     line-height: 0.8rem;
-    font-size: .4rem;
+    font-size: 0.4rem;
     color: #fff;
     border: 1px solid #fff;
-    margin-top: .6rem;
-    letter-spacing: .03rem;
+    margin-top: 0.6rem;
+    letter-spacing: 0.03rem;
 }
 
 .footer {
     text-align: center;
-    font-size: .24rem;
-    padding: 1rem 0;
+    font-size: 0.24rem;
+    padding: 0.8rem 0;
     color: #842407;
-
 }
 
 .popup {
@@ -115,29 +126,78 @@ a {
     color: #fff;
 }
 
+.popup .text-box {
+    position: relative;
+}
+
+.text-box .wishContent {
+    background-color: #d22726;
+    /*margin: 1vw 8vw 0 6vw;*/
+    border-radius: 10px;
+    border: 0px solid;
+    color: #fff;
+    font-size: 18px;
+    width: 100%;
+}
+
+textarea::placeholder {
+    color: #fff;
+}
+
+.text-box .wordsNum {
+    font-size: 0.28rem;
+    position: absolute;
+    bottom: 0.4rem;
+    right: 0.7rem;
+}
+
+.popup .popup-title {
+    padding: 0.6rem;
+    font-weight: 400;
+}
+
+.popup .popup-title > p {
+    font-size: 0.73rem;
+    text-align: center;
+    color: #fff;
+}
+
 .popup .detail {
-    font-size: .34rem;
+    font-size: 0.34rem;
     font-family: LIG;
-    height: .7rem;
+    height: 0.7rem;
     border-bottom: 1px solid #ccc;
-    line-height: .7rem;
-    padding-top: .76rem;
+    line-height: 0.7rem;
+    padding-top: 0.76rem;
     display: flex;
     justify-content: space-between;
-    margin: .1rem .4rem;
+    margin: 0.1rem 0.4rem;
 }
 
 .popup .down {
-    width: .6rem;
-    height: .6rem;
-    line-height: .6rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    line-height: 0.6rem;
     position: absolute;
-    top: .08rem;
-    right: .08rem;
-    font-size: .16rem;
+    top: 0.08rem;
+    right: 0.08rem;
+    font-size: 0.16rem;
     text-align: center;
     border-radius: 50%;
-    opacity: .8;
+    opacity: 0.8;
+}
+
+.popup .confirm-box {
+    display: flex;
+    margin-top: 0.6rem;
+    justify-content: center;
+}
+
+.confirm-box .whether {
+    width: 100%;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 0 0 10px 10px;
 }
 
 ul {
@@ -145,15 +205,14 @@ ul {
     display: flex;
     border: 1px solid #fff;
     border-radius: 20px;
-    align-items: center;
 }
 
 ul li {
     flex: 1;
-    padding: .04rem 0;
+    padding: 0.04rem 0;
     text-align: center;
     list-style-type: none;
-    font-size: .34rem;
+    font-size: 0.16rem;
 }
 
 ul li a {
@@ -161,7 +220,7 @@ ul li a {
     background-color: #fff;
     font-size: 1px;
     border-radius: 50%;
-    padding: 0 .1rem;
+    padding: 0 0.1rem;
     color: red;
 }
 
@@ -175,7 +234,7 @@ ul li a.active {
     position: fixed;
     left: 0;
     top: 0;
-    opacity: .6;
+    opacity: 0.6;
     width: 100%;
     height: 100%;
     background: #000;
@@ -183,11 +242,11 @@ ul li a.active {
     display: none;
 }
 
-.ryu{
+.ryu {
     width: 2rem;
     background-color: red;
-    margin: .1rem auto;
-    font-size: .42rem;
+    margin: 0.1rem auto;
+    font-size: 0.16rem;
     border-radius: 10px;
     color: #fff;
 }

@@ -58,7 +58,9 @@ public class CertController extends BaseController {
         Map<String, String> config = wxService.getJsApiConfig(getRequestURL());
         view.addObject("jsapi", config);
         view.addObject("orderCount", count);
-        view.addObject("nickname", wechatUser.getNickname());
+        String name = StringUtils.isEmptyOrWhitespace(wechatUser.getRealName()) ? wechatUser.getNickname() :
+                wechatUser.getRealName();
+        view.addObject("name", name);
 
         return view;
     }

@@ -1,6 +1,8 @@
+<script src="https://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script src="/wxpay/plugin/jquery/dist/jquery.min.js"></script>
 <script src="/wxpay/plugin/layer/layer.min.js"></script>
-<script src="/wxpay/js/rem.js"></script>
+<script th:src="@{'/wxpay/js/rem.js?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}"></script>
+<script th:src="@{'/wxpay/js/common.js?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}"></script>
 
 <script th:inline="javascript">
     function showLoad() {
@@ -56,7 +58,5 @@
                 layer.msg("微信分享接口初始化失败");
             });
         }
-
     });
-
 </script>

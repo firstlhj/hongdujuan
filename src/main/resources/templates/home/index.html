@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wxpay/css/index.css">
+    <link rel="stylesheet" th:href="@{'/wxpay/css/index.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
     <style>
@@ -150,12 +150,12 @@
             osTop > 720 ? div.classList.remove('box-6') : div.classList.add('box-6');
         }
 
-    }
-    let throttleScroll = throttle(onTop, 500)
+    };
+    let throttleScroll = throttle(onTop, 500);
     window.addEventListener("scroll", throttleScroll);
 
     let $quantity = $('#quantity');
-    let $description = $('#description')
+    let $description = $('#description');
     $('#num-jia').on('click', function () {
         let quantity = parseInt($quantity.val()) + 1;
         if (quantity > 100) {
@@ -164,7 +164,7 @@
         }
 
         $quantity.val(quantity)
-    })
+    });
     $('#num-jian').on('click', function () {
         let quantity = parseInt($quantity.val()) - 1;
         if (quantity <= 0) {
@@ -172,7 +172,7 @@
         }
 
         $quantity.val(quantity)
-    })
+    });
 
     function libmagic() {
         $('.popup').fadeIn(500);
@@ -183,34 +183,6 @@
         // stopBodyScroll(guide)
     }
 
-    $('#personal').on('click', function () {
-        $description.text('个人认种')
-        libmagic();
-        orderType = 0;
-    })
-    $('#enterprise').on('click', function () {
-        $description.text('企业认种')
-        $('.popup').fadeIn(500);
-        $('#guide').fadeIn(500);
-        $('#namein').text('公司');
-        $('#placename').attr('placeholder', '请输入公司名');
-        $('#input-phone').css({'opacity': '0'})
-        // stopBodyScroll(guide);
-
-        orderType = 1;
-    })
-    $('#reptive').on('click', function () {
-        $description.text('代人认种')
-        libmagic();
-
-        orderType = 2;
-    })
-    $('#family').on('click', function () {
-        $description.text('家庭认种')
-        libmagic();
-
-        orderType = 3;
-    })
     $('.down').on('click', function () {
         $('.popup').fadeOut(500);
         $('#guide').fadeOut(500);
@@ -220,18 +192,49 @@
         document.getElementById("mainForm").reset();
     });
 
-    function checkPhone(phone) {
-        return phone && (/^1[3456789]\d{9}$/.test(phone));
-    }
-
-    var orderType;
-
     $(function () {
         let area = wxpayUtil.getQueryString('area');
         wxpayUtil.trySetArea(area);
-        // pageConfig({
-        //     share: false // 开启分享功能
-        // });
+
+        let orderType;
+
+        const userInfo = {
+            realName: [[${realName}]] || "",
+            phone: [[${phone}]] || ""
+        };
+
+        $('#personal').on('click', function () {
+            $description.text('个人认种');
+            libmagic();
+
+            $("#placename").val(userInfo.realName);
+            $("#phone").val(userInfo.phone);
+
+            orderType = 0;
+        });
+        $('#enterprise').on('click', function () {
+            $description.text('企业认种')
+            $('.popup').fadeIn(500);
+            $('#guide').fadeIn(500);
+            $('#namein').text('公司');
+            $('#placename').attr('placeholder', '请输入公司名');
+            $('#input-phone').css({'opacity': '0'});
+            // stopBodyScroll(guide);
+
+            orderType = 1;
+        });
+        $('#reptive').on('click', function () {
+            $description.text('代人认种');
+            libmagic();
+
+            orderType = 2;
+        });
+        $('#family').on('click', function () {
+            $description.text('家庭认种');
+            libmagic();
+
+            orderType = 3;
+        });
 
         // 数量验证
         $("#quantity").change(function () {
@@ -257,8 +260,8 @@
                 return false;
             }
 
-            if (value.length > 50) {
-                layer.msg("姓名/名称长度不要超过50", {icon: 0});
+            if (value.length > 100) {
+                layer.msg("姓名/名称长度不要超过100", {icon: 0});
                 return false;
             }
         });
@@ -267,7 +270,7 @@
         $("#phone").change(function () {
             let value = this.value;
 
-            if (orderType !== 1 && !checkPhone(value)) {
+            if (orderType !== 1 && !wxpayUtil.isPhone(value)) {
                 layer.msg("请填写正确格式的手机号码", {icon: 0});
                 return false;
             }
@@ -278,10 +281,10 @@
                 return value >= 1 && value <= 100;
             },
             name: function (value) {
-                return value && value.length <= 50;
+                return value && value.length <= 100;
             },
             phone: function (value) {
-                return orderType === 1 || checkPhone(value);
+                return orderType === 1 || wxpayUtil.isPhone(value);
             }
         };
 
@@ -291,12 +294,10 @@
             if (!verify.quantity(quantity)) {
                 return false;
             }
-
             let name = $("#placename").change().val();
             if (!verify.name(name)) {
                 return false;
             }
-
             let phone = $("#phone").change().val();
             if (!verify.phone(phone)) {
                 return false;
@@ -304,7 +305,7 @@
 
             showLoad();
 
-            var orderData = {
+            const orderData = {
                 productCode: "001",
                 type: orderType,
                 quantity: quantity,

@@ -40,8 +40,6 @@ public class ProductController extends BaseController {
         ModelAndView productView = new ModelAndView("product/index");
         ModelAndView homeView = new ModelAndView("redirect:/home");
 
-        TreesSuccessModel model = new TreesSuccessModel();
-
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证
             homeView.setViewName("redirect:/home?state=" + RedirectViewEnum.product.name());
@@ -74,14 +72,9 @@ public class ProductController extends BaseController {
 
         // 获取用户头像
         WechatUser wechatUser = wechatUserService.findByOpenId(openId);
-        model.setRank(orderService.getRank(openId));
-        model.setAvatar(wechatUser.getAvatar());
-        model.setNickname(wechatUser.getNickname());
-        productView.addObject("model", model);
-
-        // 用户已支付订单
-//        List<Order> orders = orderService.findByWechatOpenIdAndStatus(openId, OrderStatusEnum.Paid);
-//        productView.addObject("orders", orders);
+        Long rank = orderService.getRank(openId);
+        productView.addObject("model", wechatUser);
+        productView.addObject("rank", rank);
 
         Long count = wechatUserService.getOrderCount(openId);
         productView.addObject("orderCount", count);

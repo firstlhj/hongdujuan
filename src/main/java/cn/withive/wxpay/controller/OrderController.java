@@ -2,6 +2,7 @@ package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.entity.Order;
 import cn.withive.wxpay.entity.Product;
+import cn.withive.wxpay.entity.WechatUser;
 import cn.withive.wxpay.model.ListModel;
 import cn.withive.wxpay.model.OrderModel;
 import cn.withive.wxpay.model.ResModel;
@@ -94,11 +95,30 @@ public class OrderController extends BaseController {
         if (model.getQuantity() == null) {
             return fail("缺少创建订单必要参数：商品数量");
         }
+        if (model.getQuantity() > 200) {
+            return fail("创建订单失败：单次商品数量不能超过200");
+        }
         if (StringUtils.isEmptyOrWhitespace(model.getName())) {
             return fail("缺少创建订单必要参数：姓名");
         }
+        if (model.getName().length() > 100) {
+            return fail("创建订单失败：姓名长度太长");
+        }
+        if (!StringUtils.isEmptyOrWhitespace(model.getPhone())) {
+            if (model.getPhone().length() > 20) {
+                return fail("创建订单失败：手机格式不正确");
+            }
+        }
         if (StringUtils.isEmptyOrWhitespace(model.getAreaCode())) {
             return fail("缺少创建订单必要参数：区域编号");
+        }
+        Product product = productService.findByCode(model.getProductCode());
+        if (product == null) {
+            return fail("创建订单失败：所选商品不存在");
+        }
+        WechatUser user = wechatUserService.findByOpenId(openId);
+        if (user == null) {
+            return fail("创建订单失败：系统中不存在此用户");
         }
         boolean existArea = areaService.exist(model.getAreaCode());
         if (!existArea) {
@@ -115,15 +135,9 @@ public class OrderController extends BaseController {
 
             // 创建订单
             try {
-                Product product = productService.findByCode(model.getProductCode());
-
-                if (product == null) {
-                    return fail("所选商品不存在");
-                }
-
+                // 保存订单
                 BigDecimal quantity = new BigDecimal(model.getQuantity());
                 Order entity = new Order();
-
                 entity.setCode(RandomUtil.generateUniqueStr());
                 entity.setWechatOpenId(openId);
                 entity.setProductId(product.getId());
@@ -135,8 +149,12 @@ public class OrderController extends BaseController {
                 entity.setAmount(product.getAmount().multiply(quantity));
                 entity.setRemark(model.getRemark());
                 entity.setAreaCode(model.getAreaCode());
-
                 orderService.create(entity);
+
+                // 保存用户个人信息
+                user.setPhone(model.getPhone());
+                user.setRealName(model.getName());
+                wechatUserService.save(user);
 
                 // 自增用户创建订单数
                 orderService.setUserCreateOrderCode(openId, entity.getCode());

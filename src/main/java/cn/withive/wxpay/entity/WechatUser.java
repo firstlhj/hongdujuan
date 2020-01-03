@@ -36,4 +36,18 @@ public class WechatUser extends BaseEntity {
     @Getter
     @Setter
     private String city;
+
+    @Getter
+    @Setter
+    @Column(length = 1023)
+    private String signature;
+
+    @Getter
+    @Setter
+    private String realName;
+
+    @Getter
+    @Setter
+    @Column(length = 20)
+    private String phone;
 }

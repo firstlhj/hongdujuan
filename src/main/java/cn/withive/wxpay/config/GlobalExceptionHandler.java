@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception ex) throws Exception {
-//        ex.printStackTrace();
+        ex.printStackTrace();
         log.error(ex.getMessage());
 
         ModelAndView mav = new ModelAndView();

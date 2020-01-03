@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" href="/wxpay/css/cate.css">
+    <link rel="stylesheet" th:href="@{'/wxpay/css/cate.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
     <title>荣誉证书</title>
     <div th:replace="shared/layout_header"></div>
 </head>
@@ -10,7 +10,7 @@
     <div>
         <div class="center" >
             <div class="center-title">
-                <p style="font-size: .34rem" th:text="${nickname}">深情楠楠</p>
+                <p style="font-size: .34rem" th:text="${name}">深情楠楠</p>
             </div>
             <div class="centern-num">
                 <p >感谢您为湖南省慈善总会韶山红杜鹃公益基金捐种<span style="color: red; font-size: .32rem;" th:text="${orderCount}+'颗'">0颗</span>红杜鹃,共同参与红色文化传播,
