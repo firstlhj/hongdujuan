@@ -26,8 +26,8 @@ public class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
-    @Value("${project.name}")
-    protected String projectName;
+    @Value("${WX.serverUrl}")
+    protected String serverUrl;
 
     protected ResModel success(String msg) {
         ResModel resModel = new ResModel();
@@ -135,18 +135,18 @@ public class BaseController {
     }
 
     protected String getRequestURL() {
-        String requestUrl = request.getRequestURL().toString();
+        String url = serverUrl + request.getRequestURI();
+
         String queryString = request.getQueryString();
         if (!StringUtils.isEmptyOrWhitespace(queryString)) {
-            requestUrl = requestUrl + "?" + queryString;
+             url +=  "?" + queryString;
         }
 
 //        URL requestURL = new URL(request.getRequestURL().toString());
 //        String port = requestURL.getPort() == -1 ? "" : ":" + requestURL.getPort();
 //        return requestURL.getProtocol() + "://" + requestURL.getHost() + port;
 
-
-        return requestUrl;
+        return url;
     }
 
     protected HttpServletRequest getRequest() {
