@@ -34,7 +34,7 @@ public class PayController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId,
                               @PathVariable(value = "orderCode") String orderCode) {
         ModelAndView payView = new ModelAndView("pay/index");
-        ModelAndView homeView = new ModelAndView("redirect:/home");
+        ModelAndView homeView = new ModelAndView("redirect:/");
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证

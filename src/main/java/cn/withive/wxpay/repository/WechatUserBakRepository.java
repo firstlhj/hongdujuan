@@ -6,13 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface WechatUserBakRepository extends JpaRepository<WechatUserBak, String> {
+public interface WechatUserBakRepository {
 
     WechatUserBak findByOpenId(String openId);
 
     boolean existsByOpenId(String openId);
 
-    @Override
+//    @Override
     @Transactional
     <S extends WechatUserBak> List<S> saveAll(Iterable<S> entities);
 }

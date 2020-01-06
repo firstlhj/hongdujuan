@@ -60,12 +60,13 @@ a {
     height: 6vh;
     position: absolute;
     right: 1rem;
-    bottom: 8.4rem;
+    top: 50%;
 }
 
 .tree {
     width: 100vw;
     margin-top: 1.6rem;
+    position: relative;
 }
 
 .tree-number {
@@ -115,12 +116,12 @@ a {
 }
 
 .popup {
-    width: 7rem;
+    width: 8rem;
     background-color: rgb(197, 17, 16);
     border-radius: 10px;
     position: fixed;
     top: 33%;
-    left: 14%;
+    left: 11%;
     display: none;
     z-index: 9999;
     color: #fff;
@@ -132,7 +133,6 @@ a {
 
 .text-box .wishContent {
     background-color: #d22726;
-    /*margin: 1vw 8vw 0 6vw;*/
     border-radius: 10px;
     border: 0px solid;
     color: #fff;
@@ -148,7 +148,7 @@ textarea::placeholder {
     font-size: 0.28rem;
     position: absolute;
     bottom: 0.4rem;
-    right: 0.7rem;
+    right: 0;
 }
 
 .popup .popup-title {

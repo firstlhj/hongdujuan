@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" th:href="@{'/css/cate.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
+    <link rel="stylesheet" th:href="@{/css/cate.css(t=${#dates.format(#dates.createNow(), 'YYYYMMdd')})}">
     <title>荣誉证书</title>
     <div th:replace="shared/layout_header"></div>
 </head>

@@ -25,7 +25,8 @@
                     //支付完成
                     layer.msg('支付成功', {icon: 1});
 
-                    location.href = "/wxpay/product/" + [[${orderCode}]];
+                    location.href = [[@{/product/{orderCode}(orderCode=${orderCode})}]];
+                    // location.href = "/product/" + [[${orderCode}]];
                 } else {
                     // 支付取消
                     layer.confirm('支付未完成，是否重新支付？', {icon: 3}, function (index) {

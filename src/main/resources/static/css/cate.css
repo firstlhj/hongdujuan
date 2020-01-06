@@ -3,9 +3,10 @@
     src: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/SOURCEHANSANSSC-REGULAR.OTF')
 }
 
-html{
+html {
     height: 100%;
 }
+
 body,
 div,
 h1,
@@ -15,7 +16,7 @@ p {
 }
 
 body {
-    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/bg666.png') no-repeat;
+    background: url('https://hongdujuan.oss-cn-shenzhen.aliyuncs.com/bg2.png') no-repeat;
     background-size: 100% 100%;
     background-color: rgb(229, 42, 47);
 }
@@ -77,8 +78,9 @@ body {
     width: 40%;
     display: none;
 }
-.centern-num p{
-    text-indent:30px;
+
+.centern-num p {
+    text-indent: 30px;
     letter-spacing: .01rem;
     font-size: .32rem;
     font-weight: 500;

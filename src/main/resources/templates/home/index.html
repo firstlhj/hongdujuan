@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" th:href="@{'/css/index.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
+    <link rel="stylesheet" th:href="@{/css/index.css(t=${#dates.format(#dates.createNow(), 'YYYYMMdd')})}">
     <title>杜鹃花</title>
     <div th:replace="shared/layout_header"></div>
     <style>
@@ -44,7 +44,7 @@
     <div th:switch="${showMyTree}">
         <div th:case="true">
             <div class="name_cmd">
-                <a href="/wxpay/product" style="color: #ffdda4;">
+                <a th:href="@{/product}" style="color: #ffdda4;">
                     <p style="height:.6rem">我</p>
                     <p style="height:.6rem">的</p>
                     <p style="height:.6rem">认</p>
@@ -100,7 +100,7 @@
                 </div>
             </div>
             <div class="down">
-                <img src="/wxpay/img/gbi.png" alt="">
+                <img th:src="@{/img/gbi.png}" alt="">
             </div>
         </form>
     </div>
@@ -317,13 +317,14 @@
             $.ajax({
                 type: "post",
                 dataType: 'json',
-                url: "/wxpay/order/create",
+                url: [[@{'/order/create'}]],
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(orderData),
                 success: function (res) {
                     if (res.code) {
                         // 下单成功跳转支付
-                        location.href = `/wxpay/pay/${res.data}`;
+                        const payUrl = [[@{'/pay'}]];
+                        location.href = `${payUrl}/${res.data}`;
                     } else {
                         layer.alert(res.msg, {icon: 2});
                     }

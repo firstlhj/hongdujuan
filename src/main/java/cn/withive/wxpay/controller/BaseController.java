@@ -29,6 +29,8 @@ public class BaseController {
     @Value("${project.url}")
     protected String serverUrl;
 
+    protected String homeUrl = "/";
+
     protected ResModel success(String msg) {
         ResModel resModel = new ResModel();
         resModel.setMsg(msg);
@@ -164,5 +166,9 @@ public class BaseController {
 
 
         return response;
+    }
+
+    protected String getHomeUrl() {
+        return homeUrl;
     }
 }

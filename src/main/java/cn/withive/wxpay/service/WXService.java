@@ -6,7 +6,7 @@ import cn.withive.wxpay.config.WXPayMchConfig;
 import cn.withive.wxpay.constant.BillTypeEnum;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.model.ResModel;
-import cn.withive.wxpay.model.WXAccessTokenModel;
+import cn.withive.wxpay.model.WXUserTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
 import cn.withive.wxpay.sdk.JsApi.WXJsApiUtil;
 import cn.withive.wxpay.sdk.WXPay;
@@ -15,7 +15,6 @@ import cn.withive.wxpay.sdk.WXPayUtil;
 import cn.withive.wxpay.util.HttpUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -91,7 +90,7 @@ public class WXService {
      * @param code
      * @param callback
      */
-    public void getAccessToken(@NonNull String code, @NonNull GetAccessTokenCallback callback) {
+    public void getUserToken(@NonNull String code, @NonNull GetAccessTokenCallback callback) {
         if (StringUtils.isEmptyOrWhitespace(code)) {
             throw new IllegalArgumentException("缺少必要参数：code！");
         }
@@ -141,7 +140,7 @@ public class WXService {
     }
 
     public @Nullable
-    WXAccessTokenModel getAccessToken(@NonNull String code) {
+    WXUserTokenModel getUserToken(@NonNull String code) {
         if (StringUtils.isEmptyOrWhitespace(code)) {
             throw new IllegalArgumentException("缺少必要参数：code！");
         }
@@ -160,7 +159,7 @@ public class WXService {
             return null;
         }
 
-        WXAccessTokenModel result = jsonObject.toJavaObject(WXAccessTokenModel.class);
+        WXUserTokenModel result = jsonObject.toJavaObject(WXUserTokenModel.class);
 
         // 缓存access_token，便于以后再获取用户信息
         ValueOperations<String, String> valueOperations = stringRedisTemplate.opsForValue();
@@ -172,7 +171,7 @@ public class WXService {
         return result;
     }
 
-    public String getAccessTokenFormCache(@NonNull String openId) {
+    public String getUserTokenFormCache(@NonNull String openId) {
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             throw new IllegalArgumentException("缺少查询必要参数：openId！");
         }

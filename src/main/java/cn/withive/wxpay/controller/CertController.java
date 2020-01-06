@@ -36,7 +36,7 @@ public class CertController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId) {
 
         ModelAndView view = new ModelAndView("cert/index");
-        ModelAndView homeView = new ModelAndView("redirect:/home");
+        ModelAndView homeView = new ModelAndView("redirect:/");
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证

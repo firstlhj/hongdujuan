@@ -12,13 +12,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface OrderBakRepository extends JpaRepository<OrderBak, String> {
+public interface OrderBakRepository {
 
 //    Order findByWechatOpenIdAndStatus(String openId, OrderStatusEnum status);
 
     boolean existsByWechatOpenIdAndStatus(String openId, OrderStatusEnum status);
 
-    @Override
+//    @Override
     @Transactional
     <S extends OrderBak> List<S> saveAll(Iterable<S> entities);
 

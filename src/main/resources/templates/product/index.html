@@ -2,7 +2,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <link rel="stylesheet" th:href="@{'/css/treesSuccess.css?t'+${#dates.format(#dates.createNow(), 'YYYYMMdd')}}">
+    <link rel="stylesheet" th:href="@{/css/treesSuccess.css(t=${#dates.format(#dates.createNow(), 'YYYYMMdd')})}">
     <title>认种中心</title>
     <div th:replace="shared/layout_header"></div>
 </head>
@@ -21,6 +21,7 @@
              alt="">
         <div class="leave"></div>
     </div>
+
     <div class="tree-number">
         <div class="tree-my">
             <p th:text="${rank}">0</p>
@@ -34,7 +35,7 @@
     </div>
     <div style="display: flex;">
         <div class="cert">
-            <a href="/wxpay/cert/index">我的证书</a>
+            <a th:href="@{/cert}">我的证书</a>
         </div>
         <div class="cert">
             <p id="personal" style="z-index: 9999;">个人明细</p>
@@ -60,19 +61,19 @@
         <ul>
             <li>
                 <div style="width:50%;margin-left: 9%;" id="prev">
-                    <img src="/wxpay/img/zzz.png" alt="">
+                    <img th:src="@{/img/zzz.png}" alt="">
                 </div>
             </li>
             <li id="pageNum">1</li>
             <li>
                 <div style="width:50%;margin-left: 43%;" id="next">
-                    <img src="/wxpay/img/you.png" alt="">
+                    <img th:src="@{/img/you.png}" alt="">
                 </div>
             </li>
         </ul>
     </div>
     <div class="down">
-        <img src="/wxpay/img/gbi.png" alt="">
+        <img th:src="@{/img/gbi.png}" alt="">
     </div>
 </div>
 
@@ -100,7 +101,7 @@
             </div>
         </div>
         <div class="down">
-            <img src="/wxpay/img/gbi.png" alt=""/>
+            <img th:src="@{/img/gbi.png}" alt=""/>
         </div>
     </div>
 </div>
@@ -113,7 +114,15 @@
 </html>
 
 <template th:replace="shared/layout_scripts"></template>
-<script>
+<script th:inline="javascript">
+
+    const isIphonex = () => {
+        if (typeof window !== 'undefined' && window) {
+            return /iphone/gi.test(window.navigator.userAgent) && window.screen.height >= 812;
+        }
+        return false;
+    };
+
     const checkStrLengths = (str, maxLength) => {
         let result = 0
         str && str.length > maxLength ? (result = maxLength) : (result = str.length)
@@ -153,8 +162,11 @@
     })
 
     function loadPage(page, size) {
+
+        const listUrl = [[@{'/order/list'}]];
+
         $.ajax({
-            url: `/wxpay/order/list?page=${page}&size=${size}`,
+            url: `${listUrl}?page=${page}&size=${size}`,
             method: "GET",
             success: function (res) {
                 if (res.code) {
@@ -234,7 +246,7 @@
             };
 
             $.ajax({
-                url: '/wxpay/user/sign',
+                url: [[@{'/user/sign'}]],
                 method: "post",
                 contentType: "application/json;charset=utf-8",
                 data: JSON.stringify(param),

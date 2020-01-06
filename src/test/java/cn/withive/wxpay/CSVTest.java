@@ -55,7 +55,7 @@ public class CSVTest {
     @Autowired
     private OrderRepository orderRepository;
 
-    @Autowired
+//    @Autowired
     private OrderBakRepository orderBakRepository;
 
     @Autowired
@@ -64,7 +64,7 @@ public class CSVTest {
     @Autowired
     private WechatUserRepository wechatUserRepository;
 
-    @Autowired
+//    @Autowired
     private WechatUserBakRepository wechatUserBakRepository;
 
     @Autowired
@@ -271,7 +271,8 @@ public class CSVTest {
 
 
         List<WechatUser> users = wechatUserRepository.findAll();
-        List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
+//        List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
+        List<WechatUserBak> userBaks = new LinkedList<>();
         for (WechatUser user : users) {
             Optional<WechatUserBak> bak =
                     userBaks.stream().filter(x -> x.getOpenId().equals(user.getOpenId())).findFirst();
@@ -337,7 +338,8 @@ public class CSVTest {
         orderBakRepository.saveAll(needToBak);
 
         List<WechatUser> users = wechatUserRepository.findAll();
-        List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
+//        List<WechatUserBak> userBaks = wechatUserBakRepository.findAll();
+        List<WechatUserBak> userBaks = new LinkedList<>();
         List<WechatUserBak> needToBak2 = new LinkedList<>();
         for (WechatUser user : users) {
             boolean isPresent = userBaks.stream().anyMatch(x -> x.getOpenId().equals(user.getOpenId()));

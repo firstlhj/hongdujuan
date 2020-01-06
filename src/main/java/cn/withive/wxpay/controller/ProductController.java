@@ -38,11 +38,10 @@ public class ProductController extends BaseController {
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId,
                               @PathVariable(value = "orderCode", required = false) String orderCode) {
         ModelAndView productView = new ModelAndView("product/index");
-        ModelAndView homeView = new ModelAndView("redirect:/home");
+        ModelAndView homeView = new ModelAndView("redirect:/");
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             // openId 不存在，重新跳转去验证
-            homeView.setViewName("redirect:/home?state=" + RedirectViewEnum.product.name());
             return homeView;
         }
 

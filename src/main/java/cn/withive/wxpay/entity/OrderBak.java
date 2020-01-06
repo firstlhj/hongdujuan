@@ -12,8 +12,8 @@ import javax.persistence.UniqueConstraint;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "`OrderBak`", uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
+//@Entity
+//@Table(name = "`OrderBak`", uniqueConstraints = {@UniqueConstraint(columnNames = "code")})
 public class OrderBak extends BaseEntity {
 
     @Getter

@@ -49,7 +49,7 @@ class WxpayApplicationTests {
 
     @Test
     void test3() {
-        WXService.getAccessToken("12345", new GetAccessTokenCallback() {
+        WXService.getUserToken("12345", new GetAccessTokenCallback() {
             @Override
             public void success(String accessToken, String openId) {
                 log.info(accessToken);

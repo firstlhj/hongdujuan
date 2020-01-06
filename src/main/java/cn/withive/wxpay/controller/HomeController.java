@@ -1,10 +1,7 @@
 package cn.withive.wxpay.controller;
 
-import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.entity.WechatUser;
-import cn.withive.wxpay.model.ResModel;
-import cn.withive.wxpay.model.UserModel;
-import cn.withive.wxpay.model.WXAccessTokenModel;
+import cn.withive.wxpay.model.WXUserTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
 import cn.withive.wxpay.service.AreaService;
 import cn.withive.wxpay.service.OrderService;
@@ -70,9 +67,7 @@ public class HomeController extends BaseController {
         }
         if (!StringUtils.isEmptyOrWhitespace(area)) {
             boolean existArea = areaService.exist(area);
-            if (existArea) {
-                addCookie(CookieEnum.area, area);
-            } else {
+            if (!existArea) {
                 throw new EntityNotFoundException("不存在区域编号：" + area);
             }
         }
@@ -90,14 +85,14 @@ public class HomeController extends BaseController {
                 view.setViewName(url);
                 return view;
             } else {
-                WXAccessTokenModel accessTokenModel = wxService.getAccessToken(code);
-                if (accessTokenModel == null) {
+                WXUserTokenModel userToken = wxService.getUserToken(code);
+                if (userToken == null) {
                     throw new InternalException("获取微信用户授权数据异常");
                 }
-                openId = accessTokenModel.getOpenid();
+                openId = userToken.getOpenid();
                 addOpenIdToCookie(openId);
 
-                String url = "redirect:/home/index";
+                String url = "redirect:/";
                 if (!StringUtils.isEmptyOrWhitespace(state)) {
                     url += "?area=" + state;
                 }
@@ -110,11 +105,11 @@ public class HomeController extends BaseController {
 
         WechatUser user = wechatUserService.findByOpenId(openId);
         if (user == null) {
-            String token = wxService.getAccessTokenFormCache(openId);
+            String token = wxService.getUserTokenFormCache(openId);
             if (StringUtils.isEmpty(token)) {
                 // token 失效了
                 removeOpenId();
-                view.setViewName("redirect:/home/index");
+                view.setViewName("redirect:/");
                 return view;
             }
             WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
@@ -135,11 +130,11 @@ public class HomeController extends BaseController {
         } else {
             // 用户信息超过七天,或者缺少详细信息,那么拉取更新用户最新个人信息
             if (user.getCreatTime().plusDays(syncUserInfoDay).isBefore(LocalDateTime.now()) || StringUtils.isEmptyOrWhitespace(user.getNickname())) {
-                String token = wxService.getAccessTokenFormCache(openId);
+                String token = wxService.getUserTokenFormCache(openId);
                 if (StringUtils.isEmpty(token)) {
                     // token 失效了
                     removeOpenId();
-                    view.setViewName("redirect:/home/index");
+                    view.setViewName("redirect:/");
                     return view;
                 }
                 WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
@@ -167,11 +162,5 @@ public class HomeController extends BaseController {
         view.addObject("phone", user.getPhone());
 
         return view;
-    }
-
-    @GetMapping("/test")
-    @ResponseBody
-    public ResModel sign() {
-        return success(null, getRequestURL());
     }
 }

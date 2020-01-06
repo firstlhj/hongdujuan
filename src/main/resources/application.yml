@@ -41,7 +41,7 @@ spring:
         format_sql: true
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         enable_lazy_load_no_trans: true
-#        generate_statistics: true
+        #        generate_statistics: true
         order_inserts: true
         jdbc:
           batch_size: 1000
