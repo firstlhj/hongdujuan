@@ -218,7 +218,7 @@
             $('#guide').fadeIn(500);
             $('#namein').text('公司');
             $('#placename').attr('placeholder', '请输入公司名');
-            $('#input-phone').css({'opacity': '0'});
+            // $('#input-phone').css({'opacity': '0'});
             // stopBodyScroll(guide);
 
             orderType = 1;
@@ -270,10 +270,19 @@
         $("#phone").change(function () {
             let value = this.value;
 
-            if (orderType !== 1 && !wxpayUtil.isPhone(value)) {
-                layer.msg("请填写正确格式的手机号码", {icon: 0});
+            if (!value) {
+                layer.msg("请填写电话", {icon: 0});
                 return false;
             }
+            if (value.length > 15) {
+                layer.msg("电话格式不正确", {icon: 0});
+                return false;
+            }
+
+            // if (orderType !== 1 && !wxpayUtil.isPhone(value)) {
+            //     layer.msg("请填写正确格式的手机号码", {icon: 0});
+            //     return false;
+            // }
         });
 
         let verify = {
@@ -284,7 +293,7 @@
                 return value && value.length <= 100;
             },
             phone: function (value) {
-                return orderType === 1 || wxpayUtil.isPhone(value);
+                return value && value.length <= 15;
             }
         };
 
