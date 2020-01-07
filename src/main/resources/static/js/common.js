@@ -15,11 +15,10 @@ window.wxpayUtil = (function (window, document, undefined) {
             return reg.test(str);
         },
         isPhone: function (phone) {
-            return phone && (/^1[3456789]\d{9}$/.test(phone));
+            return /^1[3456789]\d{9}$/.test(phone);
         },
         isTel: function (str) {
-            const reg = /^0\d{2,3}-?\d{7,8}$/;
-            return reg.test(str);
+            return /^(\d{3,4}-)?\d{7,8}$/.test(str);
         },
         getQueryString: function (name) {
             var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
