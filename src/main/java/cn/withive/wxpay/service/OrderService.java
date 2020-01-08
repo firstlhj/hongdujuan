@@ -1,5 +1,6 @@
 package cn.withive.wxpay.service;
 
+import cn.withive.wxpay.config.ProjectConfig;
 import cn.withive.wxpay.config.StorageConfig;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
 import cn.withive.wxpay.constant.OrderStatusEnum;
@@ -44,11 +45,8 @@ public class OrderService {
 
     private Long keyExpire = 3600L;
 
-    @Value("${order.create_frequency_value}")
-    private Long createFrequencyValue;
-
-    @Value("${order.create_frequency_expire}")
-    private Long createFrequencyExpire;
+    @Autowired
+    private ProjectConfig projectConfig;
 
     public Page<Order> findByWechatOpenIdAndPaid(String openId, Pageable pageable) {
 
@@ -215,7 +213,7 @@ public class OrderService {
         if (size == null) {
             size = 0L;
         }
-        return size >= createFrequencyValue;
+        return size >= projectConfig.getCreateFrequencyValue();
     }
 
     /**
@@ -229,8 +227,8 @@ public class OrderService {
 
         operations.add(CacheKeyConstEnum.user_order_created_key.getKey(openId), orderCode, System.currentTimeMillis());
 
-        stringRedisTemplate.expire(CacheKeyConstEnum.user_order_created_key.getKey(openId), createFrequencyExpire,
-                TimeUnit.SECONDS);
+        stringRedisTemplate.expire(CacheKeyConstEnum.user_order_created_key.getKey(openId),
+                projectConfig.getCreateFrequencyExpire(), TimeUnit.SECONDS);
     }
 
     /**

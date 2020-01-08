@@ -1,6 +1,8 @@
 package cn.withive.wxpay.controller;
 
 import cn.withive.wxpay.entity.WechatUser;
+import cn.withive.wxpay.exception.TokenExpireException;
+import cn.withive.wxpay.exception.WxException;
 import cn.withive.wxpay.model.WXUserTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
 import cn.withive.wxpay.service.AreaService;
@@ -38,9 +40,6 @@ public class HomeController extends BaseController {
     @Autowired
     private AreaService areaService;
 
-    @Value("${user.sync_info_day}")
-    private Integer syncUserInfoDay;
-
     /**
      * 微信验证回调
      *
@@ -61,7 +60,7 @@ public class HomeController extends BaseController {
 
     @RequestMapping({"", "/index"})
     public ModelAndView index(@CookieValue(value = "openId", required = false) String openId, String code,
-                              String state, String area) {
+                              String state, String area) throws WxException {
         if (StringUtils.isEmptyOrWhitespace(state) && StringUtils.isEmptyOrWhitespace(area)) {
             return errorView(new IllegalArgumentException("页面不存在区域编号"));
         }
@@ -76,91 +75,37 @@ public class HomeController extends BaseController {
 
         if (StringUtils.isEmptyOrWhitespace(openId)) {
             if (StringUtils.isEmptyOrWhitespace(code)) {
-                String url = "redirect:/home/authorize";
-                if (!StringUtils.isEmptyOrWhitespace(area)) {
-                    url += "?state=" + area;
-                }
-
                 // 没有openId,也没有code,那么重定向到微信验证页面
-                view.setViewName(url);
+                view.setViewName(redirectToAuthorize(area));
                 return view;
             } else {
                 WXUserTokenModel userToken = wxService.getUserToken(code);
                 if (userToken == null) {
                     throw new InternalException("获取微信用户授权数据异常");
                 }
-                openId = userToken.getOpenid();
-                addOpenIdToCookie(openId);
-
-                String url = "redirect:/";
-                if (!StringUtils.isEmptyOrWhitespace(state)) {
-                    url += "?area=" + state;
-                }
+                addOpenIdToCookie(userToken.getOpenid());
 
                 // 避免地址栏上出现code参数
-                view.setViewName(url);
+                view.setViewName(redirectToHome(state));
                 return view;
             }
         }
 
-        WechatUser user = wechatUserService.findByOpenId(openId);
-        if (user == null) {
-            String token = wxService.getUserTokenFormCache(openId);
-            if (StringUtils.isEmpty(token)) {
-                // token 失效了
-                removeOpenId();
-                view.setViewName("redirect:/");
-                return view;
-            }
-            WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
-            if (userInfoModel == null) {
-                throw new InternalException("获取微信用户信息异常");
-            }
+        try {
+            WechatUser user = wechatUserService.syncInfo(openId);
+            Map<String, String> config = wxService.getJsApiConfig(getRequestURL());
+            boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
 
-            user = new WechatUser();
-            user.setId(RandomUtil.generateUniqueStr());
-            user.setCreatTime(LocalDateTime.now());
-            user.setOpenId(openId);
-            user.setNickname(userInfoModel.getNickname());
-            user.setAvatar(userInfoModel.getHeadimgurl());
-            user.setCountry(userInfoModel.getCountry());
-            user.setProvince(userInfoModel.getProvince());
-            user.setCity(userInfoModel.getCity());
-            wechatUserService.save(user);
-        } else {
-            // 用户信息超过七天,或者缺少详细信息,那么拉取更新用户最新个人信息
-            if (user.getCreatTime().plusDays(syncUserInfoDay).isBefore(LocalDateTime.now()) || StringUtils.isEmptyOrWhitespace(user.getNickname())) {
-                String token = wxService.getUserTokenFormCache(openId);
-                if (StringUtils.isEmpty(token)) {
-                    // token 失效了
-                    removeOpenId();
-                    view.setViewName("redirect:/");
-                    return view;
-                }
-                WXUserInfoModel userInfoModel = wxService.getUserInfo(token, openId);
-                if (userInfoModel == null) {
-                    throw new InternalException("获取微信用户信息异常");
-                }
+            view.addObject("jsapi", config);
+            view.addObject("showMyTree", isExist);
+            view.addObject("realName", user.getRealName());
+            view.addObject("phone", user.getPhone());
 
-                user.setCreatTime(LocalDateTime.now());
-                user.setNickname(userInfoModel.getNickname());
-                user.setAvatar(userInfoModel.getHeadimgurl());
-                user.setCountry(userInfoModel.getCountry());
-                user.setProvince(userInfoModel.getProvince());
-                user.setCity(userInfoModel.getCity());
-                wechatUserService.save(user);
-            }
+            return view;
+        } catch (TokenExpireException e) {
+            removeOpenIdFromCookie();
+            view.setViewName(redirectToAuthorize(area));
+            return view;
         }
-
-        Map<String, String> config = wxService.getJsApiConfig(getRequestURL());
-        view.addObject("jsapi", config);
-
-        boolean isExist = orderService.existsByWechatOpenIdAndPaid(openId);
-        // 用户曾经下过订单，那么页面上显示我的认种页面
-        view.addObject("showMyTree", isExist);
-        view.addObject("realName", user.getRealName());
-        view.addObject("phone", user.getPhone());
-
-        return view;
     }
 }

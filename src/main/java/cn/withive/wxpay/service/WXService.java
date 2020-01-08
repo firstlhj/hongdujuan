@@ -5,6 +5,8 @@ import cn.withive.wxpay.callback.GetUserInfoCallback;
 import cn.withive.wxpay.config.WXPayMchConfig;
 import cn.withive.wxpay.constant.BillTypeEnum;
 import cn.withive.wxpay.constant.CacheKeyConstEnum;
+import cn.withive.wxpay.exception.TokenExpireException;
+import cn.withive.wxpay.exception.WxException;
 import cn.withive.wxpay.model.ResModel;
 import cn.withive.wxpay.model.WXUserTokenModel;
 import cn.withive.wxpay.model.WXUserInfoModel;
@@ -257,6 +259,36 @@ public class WXService {
 
         if (jsonObject.containsKey("errcode")) {
             return null;
+        }
+
+        WXUserInfoModel userInfo = jsonObject.toJavaObject(WXUserInfoModel.class);
+
+        return userInfo;
+    }
+
+    public WXUserInfoModel getUserInfo(@NonNull String openId) throws WxException, TokenExpireException {
+        if (StringUtils.isEmptyOrWhitespace(openId)) {
+            throw new IllegalArgumentException("缺少必要参数：openId！");
+        }
+
+        String token = this.getUserTokenFormCache(openId);
+        if (StringUtils.isEmpty(token)) {
+            // token 失效了
+            throw new TokenExpireException();
+        }
+
+        Map<String, String> data = new LinkedHashMap<>();
+        data.put("access_token", token);
+        data.put("openid", openId);
+        data.put("lang", "zh_CN");
+        String url = config.getUserInfoURL() + HttpUtil.toUrl(data);
+
+        String body = HttpUtil.HttpGet(url);
+
+        JSONObject jsonObject = JSON.parseObject(body);
+
+        if (jsonObject.containsKey("errcode")) {
+            throw new WxException();
         }
 
         WXUserInfoModel userInfo = jsonObject.toJavaObject(WXUserInfoModel.class);

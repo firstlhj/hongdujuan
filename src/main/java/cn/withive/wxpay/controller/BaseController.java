@@ -1,5 +1,6 @@
 package cn.withive.wxpay.controller;
 
+import cn.withive.wxpay.config.ProjectConfig;
 import cn.withive.wxpay.constant.CookieEnum;
 import cn.withive.wxpay.model.ResModel;
 import lombok.SneakyThrows;
@@ -26,10 +27,12 @@ public class BaseController {
     @Autowired
     protected HttpServletRequest request;
 
-    @Value("${project.url}")
-    protected String serverUrl;
+    @Autowired
+    private ProjectConfig projectConfig;
 
-    protected String homeUrl = "/";
+    private String homeUrl = "redirect:/";
+
+    private String authorizeUrl = "redirect:/home/authorize";
 
     protected ResModel success(String msg) {
         ResModel resModel = new ResModel();
@@ -111,7 +114,7 @@ public class BaseController {
         addCookie("openId", value);
     }
 
-    protected void removeOpenId() {
+    protected void removeOpenIdFromCookie() {
         removeCookie("openId");
     }
 
@@ -137,7 +140,7 @@ public class BaseController {
     }
 
     protected String getRequestURL() {
-        String url = serverUrl + request.getRequestURI();
+        String url = projectConfig.getServerUrl() + request.getRequestURI();
 
         String queryString = request.getQueryString();
         if (!StringUtils.isEmptyOrWhitespace(queryString)) {
@@ -168,7 +171,18 @@ public class BaseController {
         return response;
     }
 
-    protected String getHomeUrl() {
-        return homeUrl;
+    protected String redirectToHome(String area) {
+        if (StringUtils.isEmptyOrWhitespace(area)) {
+            return homeUrl;
+        }
+
+        return homeUrl + "?area=" + area;
+    }
+
+    protected String redirectToAuthorize(String area) {
+        if (StringUtils.isEmptyOrWhitespace(area)) {
+            return authorizeUrl;
+        }
+        return authorizeUrl + "?state=" + area;
     }
 }
